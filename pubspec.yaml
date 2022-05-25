@@ -43,6 +43,8 @@ dependencies:
   cached_network_image: ^3.2.0
   mpesa_flutter_plugin: ^1.6.0
   mpesa: ^2.0.2
+  http: ^0.13.4
+  fluttertoast: ^8.0.9
 
 dev_dependencies:
   flutter_test:
@@ -70,6 +72,7 @@ flutter:
   assets:
     - assets/illustrations/
     - assets/icons/
+    - assets/mpesa.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
