@@ -45,6 +45,10 @@ dependencies:
   mpesa: ^2.0.2
   http: ^0.13.4
   fluttertoast: ^8.0.9
+  firebase_auth: ^3.3.19
+  firebase_core: ^1.17.1
+  google_maps_flutter: ^2.1.7
+
 
 dev_dependencies:
   flutter_test:
