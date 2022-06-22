@@ -1,12 +1,14 @@
 import 'dart:ui';
 
 import 'package:badges/badges.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:foodie/CartPage.dart';
 import 'package:foodie/Providers/FoodsNavbar.dart';
 import 'package:foodie/Providers/Foodsprovider.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 
 import 'Home/widgets/FoodNavTab.dart';
@@ -23,6 +25,12 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+   final  _googleSignIn = GoogleSignIn(
+  scopes: [
+    'email',
+    'https://www.googleapis.com/auth/contacts.readonly',
+  ],
+); 
   bool themeSwitch = false;
   @override
   Widget build(BuildContext context) {
@@ -106,10 +114,13 @@ class _HomeState extends State<Home> {
           ),
           GestureDetector(
             onTap: () {
-              setState(() {
-                themeSwitch = !themeSwitch;
-                themeProvider.swapTheme();
-              });
+
+FirebaseAuth.instance.signOut();
+
+              // setState(() {
+              //   themeSwitch = !themeSwitch;
+              //   themeProvider.swapTheme();
+              // });
             },
             child: themeSwitch
                 ? const Icon(

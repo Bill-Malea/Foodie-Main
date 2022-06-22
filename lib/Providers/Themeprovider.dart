@@ -44,11 +44,12 @@ class ThemeProvider extends ChangeNotifier {
           titleTextStyle: TextStyle(
         color: Color(0xff544646),
       )),
-      scaffoldBackgroundColor: const Color(0xffFFFAEE),
+      scaffoldBackgroundColor: const Color(0xfff7ab0a),
+      //FFFAEE),
       appBarTheme: const AppBarTheme(
           iconTheme:
               IconThemeData(size: 20, color: Colors.black),
-          color: Color(0xffFFFAEE),
+          color: Color(0xfff7ab0a),
           titleTextStyle:
               TextStyle(fontSize: 15, color: Colors.black)),
       cardTheme: const CardTheme(
@@ -56,7 +57,7 @@ class ThemeProvider extends ChangeNotifier {
       ),
       colorScheme: ColorScheme.fromSwatch().copyWith(
         secondary: const Color(0xff212226),
-        primary: const Color(0xffFFDB84),
+        primary: const Color(0xfff7ab0a),
       ));
 
   ThemeData dark = ThemeData.dark().copyWith(

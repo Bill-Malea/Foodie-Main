@@ -1,13 +1,16 @@
 // ignore: must_be_immutable
 // ignore_for_file: unnecessary_const
 
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
+import 'package:foodie/FormInput.dart';
+import 'package:flutter_signin_button/flutter_signin_button.dart';
 import '../MainPage.dart';
 import '../Utilities/Themes.dart';
-
+import 'package:google_sign_in/google_sign_in.dart';
 class VerifyPhone extends StatefulWidget {
   const VerifyPhone({Key? key}) : super(key: key);
 
@@ -16,6 +19,34 @@ class VerifyPhone extends StatefulWidget {
 }
 
 class _VerifyPhoneState extends State<VerifyPhone> {
+  
+  final  _googleSignIn = GoogleSignIn(
+  scopes: [
+    'email',
+    'https://www.googleapis.com/auth/contacts.readonly',
+  ],
+);
+
+
+  signInWithGoogle() async {
+   GoogleSignInAccount? googleUser = await _googleSignIn.signInSilently();
+
+    // Step 2
+    GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+   final AuthCredential cred = GoogleAuthProvider.credential
+   (idToken: googleAuth?.idToken, accessToken: googleAuth?.accessToken);
+   await _auth.signInWithCredential(cred);
+   
+}  
+
+
+
+
+
+
+
+
+  final _key = GlobalKey<FormState>();
   final _auth = FirebaseAuth.instance;
   var _start;
 
@@ -33,194 +64,212 @@ class _VerifyPhoneState extends State<VerifyPhone> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
           "Verify phone",
           style: TextStyle(
             fontSize: 18,
-            color: Colors.white,
+            color: Colors.black,
           ),
         ),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              const SizedBox(
-                height: 20,
-              ),
-              !_isloading
-                  ? const Text(
-                      'Enter your phonenumber to get started',
-                      style: TextStyle(color: Colors.white),
-                    )
-                  : Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      child: Text(
-                        "Enter phone sent to +254" + _phone.substring(1, 10),
-                        style: const TextStyle(
-                          fontSize: 15,
-                          color: Colors.white,
-                        ),
+      body: Form(
+        key: _key ,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                const SizedBox(
+                  height: 20,
+                ),
+                if(!_isloading)
+                     const Text(
+                        'Enter your phonenumber to get started',
+                        style: TextStyle(color: Colors.black),
                       ),
-                    ),
-              const SizedBox(
-                height: 20,
-              ),
-              !_isloading
-                  ? Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        buildCodeNumberBox(
-                            _phone.isNotEmpty ? _phone.substring(0, 1) : ""),
-                        buildCodeNumberBox(
-                            _phone.length > 1 ? _phone.substring(1, 2) : ""),
-                        buildCodeNumberBox(
-                            _phone.length > 2 ? _phone.substring(2, 3) : ""),
-                        buildCodeNumberBox(
-                            _phone.length > 3 ? _phone.substring(3, 4) : ""),
-                        buildCodeNumberBox(
-                            _phone.length > 4 ? _phone.substring(4, 5) : ""),
-                        buildCodeNumberBox(
-                            _phone.length > 5 ? _phone.substring(5, 6) : ""),
-                        buildCodeNumberBox(
-                            _phone.length > 6 ? _phone.substring(6, 7) : ""),
-                        buildCodeNumberBox(
-                            _phone.length > 7 ? _phone.substring(7, 8) : ""),
-                        buildCodeNumberBox(
-                            _phone.length > 8 ? _phone.substring(8, 9) : ""),
-                        buildCodeNumberBox(
-                            _phone.length > 9 ? _phone.substring(9, 10) : ""),
-                      ],
-                    )
-                  : Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        buildCodeNumberBox(_otpcode.length > 0
-                            ? _otpcode.substring(0, 1)
-                            : ""),
-                        buildCodeNumberBox(_otpcode.length > 1
-                            ? _otpcode.substring(1, 2)
-                            : ""),
-                        buildCodeNumberBox(_otpcode.length > 2
-                            ? _otpcode.substring(2, 3)
-                            : ""),
-                        buildCodeNumberBox(_otpcode.length > 3
-                            ? _otpcode.substring(3, 4)
-                            : ""),
-                        buildCodeNumberBox(_otpcode.length > 4
-                            ? _otpcode.substring(4, 5)
-                            : ""),
-                        buildCodeNumberBox(_otpcode.length > 5
-                            ? _otpcode.substring(5, 6)
-                            : ""),
-                      ],
-                    ),
-              SizedBox(
-                height: _isloading ? 10 : 40,
-              ),
-              _isloading
-                  ? Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      child: Row(
+                   
+                const SizedBox(
+                  height: 15,
+                ),
+                !_isloading
+                    ? FormInputFieldWithIcon(
+                      labelText: 'Phonenumber', 
+                    onchanged: (val ) { 
+                        setState(() {
+                      _phone = val!;
+                     
+                    });
+                     }, 
+                     validator: (val) {
+                   
+                     
+                     if(val!.isEmpty){
+                   return 'Cannot be blank!';
+                    }  else if (val.length < 10 ){
+                    return   'Please Enter a valid phonenumber';
+                     }
+                     return null;
+                      },)
+                    : Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Text(
-                            "Didn't recieve phone ? Resend in 0:${_start.toString()} ",
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: Colors.white,
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 8,
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              if (kDebugMode) {
-                                print("Resend the phone to the user");
-                              }
-                            },
-                            child: const Text(
-                              "Resend",
-                              style: TextStyle(
-                                fontSize: 12,
-                              ),
-                            ),
-                          ),
+                          buildCodeNumberBox(_otpcode.isNotEmpty
+                              ? _otpcode.substring(0, 1)
+                              : ""),
+                          buildCodeNumberBox(_otpcode.length > 1
+                              ? _otpcode.substring(1, 2)
+                              : ""),
+                          buildCodeNumberBox(_otpcode.length > 2
+                              ? _otpcode.substring(2, 3)
+                              : ""),
+                          buildCodeNumberBox(_otpcode.length > 3
+                              ? _otpcode.substring(3, 4)
+                              : ""),
+                          buildCodeNumberBox(_otpcode.length > 4
+                              ? _otpcode.substring(4, 5)
+                              : ""),
+                          buildCodeNumberBox(_otpcode.length > 5
+                              ? _otpcode.substring(5, 6)
+                              : ""),
                         ],
                       ),
-                    )
-                  : const SizedBox(),
-            ],
-          ),
-          if (!_isloading)
-            Container(
-              margin: const EdgeInsets.all(15),
-              child: ElevatedButton(
-                clipBehavior: Clip.antiAliasWithSaveLayer,
-                onPressed: _verifyPhoneNumber,
-                style: ElevatedButton.styleFrom(
-                  primary: Colors.red,
+                const SizedBox(
+                  height: 10,
                 ),
-                child: const Text(
-                  'Verify phone number',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 14,
+                _isloading
+                    ? Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              "Didn't recieve phone ? Resend in 0:${_start.toString()} ",
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Colors.white,
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 8,
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                if (kDebugMode) {
+                                  print("Resend the phone to the user");
+                                }
+                              },
+                              child: const Text(
+                                "Resend",
+                                style: TextStyle(
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    : const SizedBox(),
+              ],
+            ),
+            if (!_isloading)
+              Container(
+                margin: const EdgeInsets.all(15),
+                child: ElevatedButton(
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                  onPressed: _verifyPhoneNumber,
+                  style: ElevatedButton.styleFrom(
+                    primary: Theme.of(context).scaffoldBackgroundColor,
+                  ),
+                  child:  Text(
+                    'Login',
+                    style: TextStyle(
+                      color: Theme.of(context).primaryColor,
+                      fontSize: 14,
+                    ),
                   ),
                 ),
               ),
-            ),
-          if (_isloading)
-            Container(
-              margin: const EdgeInsets.all(15),
-              child: ElevatedButton(
-                clipBehavior: Clip.antiAliasWithSaveLayer,
-                onPressed: _verify,
-                style: ElevatedButton.styleFrom(
-                  primary: Colors.red,
-                ),
-                child: const Text(
-                  'Verify',
-                  style: const TextStyle(
-                    color: Colors.black,
-                    fontSize: 14,
+      
+      
+              
+            if (_isloading)
+              Container(
+                margin: const EdgeInsets.all(10),
+                child: ElevatedButton(
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                  onPressed: _verify,
+                  style: ElevatedButton.styleFrom(
+                    primary: Theme.of(context).scaffoldBackgroundColor,
+                  ),
+                  child: const Text(
+                    'Verify',
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 14,
+                    ),
                   ),
                 ),
               ),
+               if (_isloading)
+            Expanded(
+              child: NumericPad(
+                onNumberSelected: (value) async {
+                  setState(() {
+                    
+                      if (value != -1) {
+                        if (_otpcode.length < 6) {
+                          _otpcode = _otpcode + value.toString();
+                        }
+                      } else {
+                        _otpcode = _otpcode.substring(0, _otpcode.length - 1);
+                      }
+                    
+                  });
+                },
+              ),
             ),
+      
+      if(!_isloading)
+      Container(
+        margin: const EdgeInsets.all(10),
+        child:Row(children: const [
           Expanded(
-            child: NumericPad(
-              onNumberSelected: (value) async {
-                setState(() {
-                  if (!_isloading) {
-                    if (value != -1) {
-                      if (_phone.length < 10) {
-                        _phone = _phone + value.toString();
-                      }
-                    } else {
-                      _phone = _phone.substring(0, _phone.length - 1);
-                    }
-                  } else {
-                    if (value != -1) {
-                      if (_otpcode.length < 6) {
-                        _otpcode = _otpcode + value.toString();
-                      }
-                    } else {
-                      _otpcode = _otpcode.substring(0, _otpcode.length - 1);
-                    }
-                  }
-                });
-              },
-            ),
+        child: Divider(thickness: 1.0,
+        color: Colors.black12,),
           ),
-        ],
+          SizedBox(width: 5,),
+          Text('Or'),
+          SizedBox(width: 5,),
+           Expanded(
+         child: Divider(thickness: 1.0,
+           color: Colors.black12,),
+           ),
+        ],)
+      ),
+      const SizedBox(height: 10,),
+      if (!_isloading)
+            
+               Container(
+                padding: const EdgeInsets.all(13),
+                 child: SignInButton(
+          
+  Buttons.Google,
+  text: "Sign up with Google",
+  padding: const EdgeInsets.all(5),
+  onPressed: () {
+      signInWithGoogle() ;
+  },
+),
+               ),
+                
+            
+          ],
+        ),
       ),
     );
   }
@@ -250,7 +299,10 @@ class _VerifyPhoneState extends State<VerifyPhone> {
   }
 
   _verifyPhoneNumber() async {
-    if (_phone.length == 10) {
+     final isValid = _key.currentState!.validate();
+    if (isValid) {
+       _key.currentState!.save();
+       FocusManager.instance.primaryFocus?.unfocus();
       setState(() {
         _isloading = true;
       });
@@ -312,12 +364,12 @@ class _VerifyPhoneState extends State<VerifyPhone> {
         width: 25,
         height: 25,
         child: Container(
-          decoration: const BoxDecoration(
-            color: Colors.red,
-            borderRadius: BorderRadius.all(
+          decoration:  BoxDecoration(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            borderRadius: const BorderRadius.all(
               Radius.circular(5),
             ),
-            boxShadow: <BoxShadow>[
+            boxShadow: const <BoxShadow>[
               BoxShadow(
                   color: Colors.transparent,
                   blurRadius: 25.0,
