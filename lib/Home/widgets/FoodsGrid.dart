@@ -196,7 +196,7 @@ class FoodGrid extends StatelessWidget {
                                   decoration:
                                       const BoxDecoration(
                                     color:
-                                        Color(0xffFFDB84),
+                                        Color(0xffffb800),
                                     borderRadius:
                                         BorderRadius.all(
                                       Radius.circular(5.0),

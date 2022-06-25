@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:foodie/Drawer.dart';
 import 'package:foodie/Home.dart';
 
 class MainPage extends StatefulWidget {
@@ -61,6 +62,7 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+     
         body: Stack(
       children: [
         SizedBox(

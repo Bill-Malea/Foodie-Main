@@ -2,6 +2,7 @@
 // ignore_for_file: unnecessary_const
 
 import 'dart:convert';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
@@ -29,14 +30,43 @@ class _VerifyPhoneState extends State<VerifyPhone> {
 
 
   signInWithGoogle() async {
-   GoogleSignInAccount? googleUser = await _googleSignIn.signInSilently();
 
-    // Step 2
-    GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
-   final AuthCredential cred = GoogleAuthProvider.credential
-   (idToken: googleAuth?.idToken, accessToken: googleAuth?.accessToken);
-   await _auth.signInWithCredential(cred);
-   
+
+    final googleSignIn = GoogleSignIn();
+   try {
+      final GoogleSignInAccount? googleSignInAccount =
+          await googleSignIn.signIn();
+      if (googleSignInAccount != null) {
+        final GoogleSignInAuthentication googleSignInAuthentication =
+            await googleSignInAccount.authentication;
+       
+        if (googleSignInAuthentication.accessToken != null &&
+            googleSignInAuthentication.idToken != null) {
+        final AuthCredential credential = GoogleAuthProvider.credential(
+          idToken: googleSignInAuthentication.idToken,
+          accessToken: googleSignInAuthentication.accessToken,
+        );
+
+        final  authResult =
+            await FirebaseAuth.instance.signInWithCredential(credential);
+
+      
+         return authResult.user;
+        } else {
+          throw PlatformException(
+            code: 'ERROR_MISSING_GOOGLE_AUTH_TOKEN',
+            message: 'Missing Google Auth Token',
+          );
+        }
+      } else {
+        throw PlatformException(
+          code: 'ERROR_ABORTED_BY_USER',
+          message: 'Sign in aborted by user',
+        );
+      }
+    } catch (error) {
+      return null;
+    }
 }  
 
 
@@ -183,7 +213,7 @@ class _VerifyPhoneState extends State<VerifyPhone> {
                   clipBehavior: Clip.antiAliasWithSaveLayer,
                   onPressed: _verifyPhoneNumber,
                   style: ElevatedButton.styleFrom(
-                    primary: Theme.of(context).scaffoldBackgroundColor,
+                    primary: Theme.of(context).colorScheme.primary,
                   ),
                   child:  Text(
                     'Login',
@@ -204,7 +234,7 @@ class _VerifyPhoneState extends State<VerifyPhone> {
                   clipBehavior: Clip.antiAliasWithSaveLayer,
                   onPressed: _verify,
                   style: ElevatedButton.styleFrom(
-                    primary: Theme.of(context).scaffoldBackgroundColor,
+                    primary: Theme.of(context).colorScheme.primary,
                   ),
                   child: const Text(
                     'Verify',
@@ -257,6 +287,7 @@ class _VerifyPhoneState extends State<VerifyPhone> {
                Container(
                 padding: const EdgeInsets.all(13),
                  child: SignInButton(
+                
           
   Buttons.Google,
   text: "Sign up with Google",
@@ -365,7 +396,7 @@ class _VerifyPhoneState extends State<VerifyPhone> {
         height: 25,
         child: Container(
           decoration:  BoxDecoration(
-            color: Theme.of(context).scaffoldBackgroundColor,
+            color: Theme.of(context).colorScheme.primary,
             borderRadius: const BorderRadius.all(
               Radius.circular(5),
             ),

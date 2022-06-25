@@ -50,6 +50,10 @@ dependencies:
   google_maps_flutter: ^2.1.7
   flutter_signin_button: ^2.0.0
   google_sign_in: ^5.3.3
+  url_launcher: ^6.1.4
+  url_launcher_web: ^2.0.12
+  curved_navigation_bar: ^1.0.3
+  flutter_rating_bar: ^4.0.1
   
 
 
@@ -97,6 +101,9 @@ flutter:
     - family: Icons_foodApp
       fonts:
          - asset: assets/fonts_icons/Icons_foodApp.ttf
+    - family:  Icon_custom
+      fonts:
+         - asset: assets/fonts_icons/Icon_custom.ttf
    # font style
     - family: Montserrat
       fonts:

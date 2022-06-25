@@ -44,7 +44,7 @@ class ThemeProvider extends ChangeNotifier {
           titleTextStyle: TextStyle(
         color: Color(0xff544646),
       )),
-      scaffoldBackgroundColor: const Color(0xfff7ab0a),
+      scaffoldBackgroundColor:  Colors.white,
       //FFFAEE),
       appBarTheme: const AppBarTheme(
           iconTheme:
@@ -58,14 +58,17 @@ class ThemeProvider extends ChangeNotifier {
       colorScheme: ColorScheme.fromSwatch().copyWith(
         secondary: const Color(0xff212226),
         primary: const Color(0xfff7ab0a),
-      ));
+      ),
+      
+      
+      );
 
   ThemeData dark = ThemeData.dark().copyWith(
     iconTheme: const IconThemeData(
       color: Color(0xffFFDB84),
       size: 20,
     ),
-    primaryColor: const Color(0xffF8A306),
+    primaryColor: const Color(0xfff7ab0a),
     dialogBackgroundColor: const Color(0xff212226),
     dialogTheme: const DialogTheme(
       titleTextStyle: TextStyle(color: Color(0xffffb800)),
@@ -99,7 +102,8 @@ class ThemeProvider extends ChangeNotifier {
       ),
     ),
     colorScheme: ColorScheme.fromSwatch()
-        .copyWith(secondary: const Color(0xff212226)),
+        .copyWith(secondary: const Color(0xff212226),
+        primary:const Color(0xff121417) ),
   );
 
   ThemeProvider({required bool isDarkMode}) {

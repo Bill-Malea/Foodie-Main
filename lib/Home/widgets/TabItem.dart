@@ -3,7 +3,7 @@ import 'package:flutter_svg/svg.dart';
 
 class TabItem extends StatefulWidget {
   final Function touched;
-  final String icon;
+  final IconData icon;
 
   final bool active;
   final String text;
@@ -28,43 +28,41 @@ class _TabItemState extends State<TabItem> {
           widget.touched();
         },
         child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
+        
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               SizedBox(
-                height: 120,
-                width: 50,
+              
                 child: Column(
                   mainAxisAlignment:
                       MainAxisAlignment.start,
                   children: [
-                    SvgPicture.asset(
-                      widget.icon,
-                      height: 80,
-                      width: 50,
-                    ),
-                    Text(
-                      widget.text,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyText2,
-                    ),
-                    const SizedBox(
+
+
+                    Icon(widget.icon,
+                    size: 22,
+                    color: Colors.black,),
+                     const SizedBox(
                       height: 5,
                     ),
-                    RotatedBox(
+                    !widget.active ?  Text(
+                      widget.text,
+                      style:const TextStyle(fontSize: 10,
+                     
+                     color: Colors.black),
+                    ):            RotatedBox(
                       quarterTurns: 3,
                       child: AnimatedContainer(
                         transform:
                             Matrix4.rotationZ(0.0174444),
                         duration: const Duration(
                             milliseconds: 100),
-                        height: 10.0,
+                        height: 15.0,
                         width: 2.0,
                         decoration: BoxDecoration(
                           color: widget.active
-                              ? Theme.of(context)
-                                  .primaryColor
+                              ?Colors.black
                               : Colors.transparent,
                         ),
                       ),

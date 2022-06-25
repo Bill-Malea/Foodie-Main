@@ -1,11 +1,13 @@
 import 'dart:ui';
 
 import 'package:badges/badges.dart';
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:foodie/CartPage.dart';
+import 'package:foodie/Drawer.dart';
 import 'package:foodie/Providers/FoodsNavbar.dart';
 import 'package:foodie/Providers/Foodsprovider.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -13,9 +15,11 @@ import 'package:provider/provider.dart';
 
 import 'Home/widgets/FoodNavTab.dart';
 import 'Home/widgets/FoodsGrid.dart';
+import 'Home/widgets/TabItem.dart';
 import 'Icons_illustrations.dart';
 import 'Providers/Cartprovider.dart';
 import 'Providers/Themeprovider.dart';
+import 'Utilities/icon_custom_icons.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -25,15 +29,16 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-   final  _googleSignIn = GoogleSignIn(
-  scopes: [
-    'email',
-    'https://www.googleapis.com/auth/contacts.readonly',
-  ],
-); 
+  final GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
   bool themeSwitch = false;
   @override
   Widget build(BuildContext context) {
+
+    final selected =
+        Provider.of<FoodNavBar>(context).selected;
+        
+    final selectedindex =
+        Provider.of<FoodNavBar>(context).selectetab;
     var _allfood =
         Provider.of<FoodsProvider>(context).allfoods;
     var _icecream =
@@ -114,13 +119,13 @@ class _HomeState extends State<Home> {
           ),
           GestureDetector(
             onTap: () {
+//  GoogleSignIn().signOut();
+// FirebaseAuth.instance.signOut();
 
-FirebaseAuth.instance.signOut();
-
-              // setState(() {
-              //   themeSwitch = !themeSwitch;
-              //   themeProvider.swapTheme();
-              // });
+              setState(() {
+                themeSwitch = !themeSwitch;
+                themeProvider.swapTheme();
+              });
             },
             child: themeSwitch
                 ? const Icon(
@@ -140,41 +145,35 @@ FirebaseAuth.instance.signOut();
         ),
         elevation: 0,
       ),
+       drawer: const Drawerwidg(),
+       bottomNavigationBar: const NavigationTabs (),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(
-            height: 10,
-          ),
-          Container(
-            margin: const EdgeInsets.only(left: 10, top: 5),
-            child: Text(
-              'Favorites',
-              style: Theme.of(context).textTheme.bodyText1,
-            ),
-          ),
-          const NavigationTabs(),
+          // const SizedBox(
+          //   height: 10,
+          // ),
+         
+         // const NavigationTabs(),
           tabWidgets.elementAt(_selected),
         ],
       ),
     );
   }
 }
-//   }
 
-//   List<FoodModel> getFoodByCategory(String foodCategory) {
-//     List<FoodModel> _foodModel = [];
-//     try {
-//       for (var food in _list) {
-//         if (food.category == foodCategory) {
-//           _foodModel.add(food);
-//         }
-//       }
-//     } on Error catch (ex) {
-//       if (kDebugMode) {
-//         print(ex);
-//       }
-//     }
-//     return _foodModel;
-//   }
-// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
