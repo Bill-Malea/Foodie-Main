@@ -26,15 +26,16 @@ class ThemeProvider extends ChangeNotifier {
         ),
         bodyText2:
             const TextStyle(color: Color(0xff544646)),
-        caption: const TextStyle(
-          color: Colors.black,
-          fontSize: 14.0,
+          caption: const TextStyle(
+          color: Colors.grey,
+          fontSize: 11.0,
         ),
       ),
       iconTheme: const IconThemeData(
         color: Colors.black,
         size: 20,
       ),
+      
       bottomSheetTheme: const BottomSheetThemeData(
         backgroundColor: Color(0xffFFFAEE),
       ),

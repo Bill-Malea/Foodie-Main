@@ -5,6 +5,8 @@ import 'package:foodie/Utilities/Themes.dart';
 import 'package:foodie/Utilities/icon_custom_icons.dart';
 import 'package:foodie/Wishlist.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import 'Orderslist.dart';
 class Drawerwidg extends StatefulWidget {
   const Drawerwidg({Key? key}) : super(key: key);
 
@@ -75,7 +77,7 @@ const SizedBox(width: 10),
           const SizedBox(
             height: 25,
           ),
-           itemsdrawer(Icons.card_travel,'Orders',(){}),
+           itemsdrawer(Icons.card_travel,'Orders',orders),
            itemsdrawer(Icons.favorite_outline_sharp,'Wishlist',wishlist),
             itemsdrawer(Icons.place,'Address',(){}),
              itemsdrawer(Icons.people,'Invite',(){}),
@@ -117,6 +119,13 @@ const SizedBox(width: 10),
     }
 
 
+orders(){
+   Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                            builder:
+                                (BuildContext context) =>
+                                    const OrderItem ()));
+}
 
 wishlist(){
    Navigator.of(context).push(
@@ -149,7 +158,7 @@ launchUrl(emailUri);
         "whatsapp://send?phone=+254727800223&text=$text";
     var whatsappURLIos = "https://wa.me/+254727800223?text=${Uri.tryParse(text)}";
     if (Platform.isIOS) {
-      // for iOS phone only
+    
       if (await canLaunchUrl(Uri.parse(whatsappURLIos))) {
         await launchUrl(Uri.parse(
           whatsappURLIos,
@@ -158,7 +167,7 @@ launchUrl(emailUri);
       errorToast('Whatsapp Not Installed');
       }
     } else {
-      // android , web
+     
       if (await canLaunchUrl(Uri.parse(whatsappURlAndroid))) {
         await launchUrl(Uri.parse(whatsappURlAndroid));
       } else {

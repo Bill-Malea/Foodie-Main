@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:foodie/Providers/Cartprovider.dart';
 import 'package:provider/provider.dart';
@@ -56,15 +57,31 @@ class FoodGrid extends StatelessWidget {
                         ));
                       }),
                       child: Container(
+                        
                         height: 150,
                         width: 200,
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           shape: BoxShape.circle,
-                          image: DecorationImage(
-                              image: NetworkImage(
-                                  foodModel[index].image),
-                              fit: BoxFit.cover),
+                        
                         ),
+
+
+                        child: CachedNetworkImage(
+  imageUrl: foodModel[index].image,
+  imageBuilder: (context, imageProvider) => Container(
+  
+     decoration:  BoxDecoration(
+                       color: Colors.red,
+                          shape: BoxShape.circle,
+                          image: DecorationImage(image: imageProvider,
+          fit: BoxFit.cover,),
+                         
+                        ),
+   
+  ),
+  placeholder: (context, url) => const CircularProgressIndicator(),
+  errorWidget: (context, url, error) => const Icon(Icons.error),
+),
                       ),
                     ),
                   ),

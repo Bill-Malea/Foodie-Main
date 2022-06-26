@@ -168,9 +168,11 @@ child: Container(
   imageBuilder: (context, imageProvider) => Container(
     height: 100,
     width: 100,
-     decoration: const BoxDecoration(
-                       
+     decoration:  BoxDecoration(
+                       color: Colors.red,
                           shape: BoxShape.circle,
+                          image: DecorationImage(image: imageProvider,
+          fit: BoxFit.cover,),
                          
                         ),
    
