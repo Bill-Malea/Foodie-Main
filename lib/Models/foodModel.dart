@@ -7,8 +7,7 @@ class FoodModel {
   String typeFood;
   String timeFood;
   String price;
-  String ingredients;
-  String nutrition;
+  
   String category;
   int quantity;
 
@@ -20,8 +19,6 @@ class FoodModel {
       required this.typeFood,
       required this.timeFood,
       required this.price,
-      required this.ingredients,
-      required this.nutrition,
       required this.category,
       required this.quantity});
 }

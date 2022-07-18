@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:badges/badges.dart';
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter/foundation.dart';
@@ -29,7 +28,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  final GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
   bool themeSwitch = false;
   @override
   Widget build(BuildContext context) {

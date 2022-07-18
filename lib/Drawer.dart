@@ -1,11 +1,14 @@
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:foodie/Utilities/Themes.dart';
 import 'package:foodie/Utilities/icon_custom_icons.dart';
 import 'package:foodie/Wishlist.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'Orderpage.dart';
 import 'Orderslist.dart';
 class Drawerwidg extends StatefulWidget {
   const Drawerwidg({Key? key}) : super(key: key);
@@ -26,11 +29,11 @@ class _DrawerwidgState extends State<Drawerwidg> {
           margin: const EdgeInsets.only(bottom: 15,left: 5),
           child: Row(
             children: [
-              Icon(icon,size: 12,),
+              Icon(icon,size: 14,),
 const SizedBox(width: 10),
               Text(name,
               style: const TextStyle(
-                fontSize: 11,
+                fontSize: 12,
                 color:  Colors.black,
               ),)
             ],
@@ -106,6 +109,15 @@ const SizedBox(width: 10),
           itemsdrawer(Icons.email,'Email', sendemail),
           itemsdrawer(Icons.whatsapp,'Whatsapp',launchwatsapp),
           itemsdrawer(Icons.ac_unit,'FAQ',(){}),
+           const Divider(
+            color: Colors.black12,
+            thickness: 1.0,
+          ),
+ itemsdrawer(Icons.logout,'Log out',(){
+    GoogleSignIn().signOut();
+ FirebaseAuth.instance.signOut();
+ }),
+
         ],),
       ),
     );}
@@ -124,7 +136,7 @@ orders(){
                         MaterialPageRoute<void>(
                             builder:
                                 (BuildContext context) =>
-                                    const OrderItem ()));
+                                    const OrderPage ()));
 }
 
 wishlist(){

@@ -58,8 +58,6 @@ class CartItems extends ChangeNotifier {
           category: existingCartItem.category,
           image: existingCartItem.image,
           desc: existingCartItem.desc,
-          ingredients: existingCartItem.ingredients,
-          nutrition: existingCartItem.nutrition,
           timeFood: existingCartItem.timeFood,
           typeFood: existingCartItem.typeFood,
         ),
@@ -76,8 +74,6 @@ class CartItems extends ChangeNotifier {
           category: food.category,
           desc: food.desc,
           image: food.image,
-          ingredients: food.ingredients,
-          nutrition: food.nutrition,
           timeFood: food.timeFood,
         ),
       );
@@ -105,8 +101,8 @@ class CartItems extends ChangeNotifier {
                 desc: '',
                 category: '',
                 image: '',
-                ingredients: '',
-                nutrition: '',
+          
+             
                 timeFood: '',
                 typeFood: '',
               ));

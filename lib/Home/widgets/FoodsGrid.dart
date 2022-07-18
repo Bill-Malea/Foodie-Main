@@ -79,7 +79,8 @@ class FoodGrid extends StatelessWidget {
                         ),
    
   ),
-  placeholder: (context, url) => const CircularProgressIndicator(),
+  placeholder: (context, url) => CircularProgressIndicator(color: Theme.of(context).cardTheme.color,
+  strokeWidth: 1.0),
   errorWidget: (context, url, error) => const Icon(Icons.error),
 ),
                       ),

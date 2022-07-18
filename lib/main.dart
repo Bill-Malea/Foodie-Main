@@ -1,4 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:foodie/Providers/Themeprovider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get_storage/get_storage.dart';
@@ -11,9 +13,11 @@ import 'Providers/Cartprovider.dart';
 import 'Providers/FoodsNavbar.dart';
 import 'Providers/Foodsprovider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
+import 'package:flutter/material.dart';
 void main() async {
-   WidgetsBinding widgetsBinding =  WidgetsFlutterBinding.ensureInitialized();
+
+     WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   await Firebase.initializeApp();
   await GetStorage.init();
 var preferences = GetStorage();
@@ -37,12 +41,14 @@ bool theme = preferences.read("isDarkTheme")?? false ;
     child: ChangeNotifierProvider(
         create: (context) => ThemeProvider(
             isDarkMode: theme
-            //preferences.read("isDarkTheme"),
+            
             
             ),
         child: const MyApp()),
   ));
+  FlutterNativeSplash.remove();
 }
+
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -50,15 +56,20 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     
-  final  _googleSignIn = GoogleSignIn(
-  scopes: [
-    'email',
-    'https://www.googleapis.com/auth/contacts.readonly',
-  ],
-);
+ 
     return Consumer<ThemeProvider>(
       builder: (context, themProvider, child) {
-        return MaterialApp(
+        return 
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        MaterialApp(
             debugShowCheckedModeBanner: false,
             theme: themProvider.getTheme,
             home:  StreamBuilder(
