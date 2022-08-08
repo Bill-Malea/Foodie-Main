@@ -90,20 +90,21 @@ class FoodGrid extends StatelessWidget {
                     bottom: 0,
                     child: SizedBox(
                       height: 120,
+                      width: 175,
                       child: Column(
+                
                         children: [
                           const SizedBox(
                             height: 30,
                           ),
-                          SizedBox(
+                          Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.all(5),
                             child: Row(
-                              mainAxisAlignment:
-                                  MainAxisAlignment
-                                      .spaceBetween,
+                              
+                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                const SizedBox(
-                                  width: 10,
-                                ),
+                                
                                 Text(
                                   foodModel[index].title,
                                   textAlign:
@@ -115,9 +116,7 @@ class FoodGrid extends StatelessWidget {
                                     fontSize: 15,
                                   ),
                                 ),
-                                const SizedBox(
-                                  width: 80,
-                                ),
+                              
                                 Row(
                                   children: [
                                     Text(

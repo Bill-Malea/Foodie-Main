@@ -4,17 +4,26 @@ import 'package:provider/provider.dart';
 
 import '../../Providers/Cartprovider.dart';
 
-class FoodDetail extends StatelessWidget {
+class FoodDetail extends StatefulWidget {
   final FoodModel food;
   const FoodDetail({Key? key, required this.food})
       : super(key: key);
 
   @override
+  State<FoodDetail> createState() => _FoodDetailState();
+}
+
+class _FoodDetailState extends State<FoodDetail> {
+  @override
   Widget build(BuildContext context) {
+
+
+     var quantity = Provider.of<CartItems>(context)
+                .itemquantity(widget.food.id);
     return Scaffold(
         body: Column(
       children: [
-        Topimage(food: food),
+        Topimage(food: widget.food),
         SizedBox(
           child: Column(
             children: [
@@ -46,17 +55,17 @@ class FoodDetail extends StatelessWidget {
                         ),
                         GestureDetector(
                           onTap: (() {
-                            if (food.quantity > 1) {
+                            if (widget.food.quantity > 1) {
                               Provider.of<CartItems>(
                                       context,
                                       listen: false)
                                   .removeSingleItem(
-                                      food.id);
+                                      widget.food.id);
                             } else {
                               Provider.of<CartItems>(
                                       context,
                                       listen: false)
-                                  .removeItem(food.id);
+                                  .removeItem(widget.food.id);
                             }
                           }),
                           child: Icon(
@@ -77,12 +86,12 @@ class FoodDetail extends StatelessWidget {
                                         context,
                                         listen: false)
                                     .items
-                                    .containsKey(food.id);
+                                    .containsKey(widget.food.id);
                             if (!cartitems) {
                               Provider.of<CartItems>(
                                       context,
                                       listen: false)
-                                  .addItem(food, food.id);
+                                  .addItem(widget.food, widget.food.id);
                             } else {
                               null;
                             }
@@ -101,11 +110,9 @@ class FoodDetail extends StatelessWidget {
                             ),
                             child: Center(
                               child: Text(
-                                // ignore: unnecessary_null_comparison
-                                food.quantity == null
-                                    ? 'Add To Cart'
-                                    : food.quantity
-                                        .toString(),
+                               
+                                 quantity== null ? '0':
+                                      quantity.toString(),
                                 style: const TextStyle(
                                     color: Colors.black,
                                     fontSize: 12),
@@ -118,9 +125,10 @@ class FoodDetail extends StatelessWidget {
                         ),
                         GestureDetector(
                           onTap: (() {
+                          
                             Provider.of<CartItems>(context,
                                     listen: false)
-                                .addItem(food, food.id);
+                                .addItem(widget.food, widget.food.id);
                           }),
                           child: Icon(
                             Icons.add,
@@ -144,8 +152,7 @@ class FoodDetail extends StatelessWidget {
                   right: 30,
                 ),
                 child: Text(
-                  'French fries are served hot, either soft or crispy, and are generally eaten as part of lunch or dinner or by themselves as a snack, and they commonly appear on the menus of diners, fast food restaurants, pubs, and bars. They are often salted and may be served with ketchup, vinegar, mayonnaise, tomato sauce, or other local specialities. Fries can be topped more heavily, as in the dishes of poutine or chili cheese fries. French fries can be made from sweet potatoes instead of potatoes. A baked variant, oven fries, uses less or no oil.',
-                  style:
+                 widget.food.description,               style:
                       Theme.of(context).textTheme.bodyText1,
                 ),
               ),
@@ -177,7 +184,7 @@ class FoodDetail extends StatelessWidget {
                             ?.color,
                         fontSize: 10,
                       )),
-                  Text(food.price,
+                  Text(widget.food.price,
                       style: const TextStyle(
                         color: Colors.green,
                         fontSize: 25,

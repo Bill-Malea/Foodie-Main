@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:foodie/Drawer.dart';
 import 'package:foodie/Home.dart';
+import 'package:provider/provider.dart';
+
+import 'Providers/Foodsprovider.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -10,6 +13,15 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+
+
+
+
+
+
+
+
+
   int _selectedIndex = 0;
 
   // final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();

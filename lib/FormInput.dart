@@ -76,7 +76,7 @@ class FormInputFieldWithIcon extends StatelessWidget {
           ),
         ),
        
-        keyboardType: TextInputType.number,
+        keyboardType: TextInputType.text,
         obscureText: obscureText,
         validator: validator,
         onChanged: onchanged,

@@ -3,7 +3,7 @@ class FoodModel {
   String id;
   String image;
   String title;
-  String desc;
+  String description;
   String typeFood;
   String timeFood;
   String price;
@@ -11,11 +11,23 @@ class FoodModel {
   String category;
   int quantity;
 
+
+
+    Map<String, dynamic> toMap(){
+      return {
+  'id':id,
+  'image':image,
+  'title':title,
+  'price':price,  
+  'quantity':quantity,
+      };
+
+}
   FoodModel(
       {required this.image,
       required this.id,
       required this.title,
-      required this.desc,
+      required this.description,
       required this.typeFood,
       required this.timeFood,
       required this.price,

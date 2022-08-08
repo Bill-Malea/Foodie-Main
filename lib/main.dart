@@ -50,8 +50,23 @@ bool theme = preferences.read("isDarkTheme")?? false ;
 }
 
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+
+ @override
+  void initState() {
+    super.initState();
+  
+    Future.delayed(Duration.zero,() {
+        Provider.of< FoodsProvider>(context,listen: false).loadfoods();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,15 +75,6 @@ class MyApp extends StatelessWidget {
     return Consumer<ThemeProvider>(
       builder: (context, themProvider, child) {
         return 
-        
-        
-        
-        
-        
-        
-        
-        
-        
         MaterialApp(
             debugShowCheckedModeBanner: false,
             theme: themProvider.getTheme,

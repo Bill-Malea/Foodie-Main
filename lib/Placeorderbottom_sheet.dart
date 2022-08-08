@@ -6,10 +6,11 @@ import 'Icons_illustrations.dart';
 import 'Models/foodModel.dart';
 
 mainBottomSheet(
-    BuildContext context, List<FoodModel> foodModel) {
+    BuildContext context, List<FoodModel> foodModel, bool isloading) {
   var _address = '';
 
   var _phoneNumber = '';
+  var _preference = '';
 
   //                       }
   final GlobalKey<FormState> _globalKey =
@@ -18,11 +19,13 @@ mainBottomSheet(
   initiatepayment() {
     final isvalid = _globalKey.currentState!.validate();
     if (isvalid) {
-      Provider.of<CartItems>(context, listen: false)
-          .processpayment(
-              userPhone: _phoneNumber,
-              amount: 1.0,
-              context: context);
+      // Provider.of<CartItems>(context, listen: false)
+      //     .processpayment(
+      //         userPhone: _phoneNumber,
+      //         amount: 1.0,
+      //         context: context
+              
+      //         ).whenComplete(() {});
     }
   }
 

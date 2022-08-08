@@ -1,20 +1,26 @@
+import 'package:foodie/Models/foodModel.dart';
+
 class OrderModel {
   String orderNumber;
   double totalPrice;
   int totalQuantity;
   String address;
-  String phoneNumber;
-  String nameCustomer;
+  String? phoneNumber;
+  String? nameCustomer;
   String orderStatus;
-  DateTime dateTime;
+  String dateTime;
+  List<FoodModel> foods;
+   String prefences;
 
-  OrderModel(
-      this.orderNumber,
-      this.totalPrice,
-      this.totalQuantity,
-      this.address,
-      this.phoneNumber,
-      this.nameCustomer,
-      this.orderStatus,
-      this.dateTime);
+  OrderModel( {
+      required this.orderNumber,
+      required this.totalPrice,
+      required this.prefences,
+      required this.foods,
+      required this.totalQuantity,
+      required this.address,
+      required this.phoneNumber,
+      required this.nameCustomer,
+      required this.orderStatus,
+      required this.dateTime});
 }

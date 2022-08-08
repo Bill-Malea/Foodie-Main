@@ -1,13 +1,18 @@
+import 'dart:math';
 import 'dart:ui';
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:foodie/Icons_illustrations.dart';
-import 'package:foodie/Models/Ordermodel.dart';
 import 'package:foodie/Models/foodModel.dart';
 import 'package:foodie/Providers/Cartprovider.dart';
 import 'package:provider/provider.dart';
+
+import 'FormInput.dart';
+import 'Models/Ordermodel.dart';
 
 class CartPage extends StatefulWidget {
   const CartPage({Key? key}) : super(key: key);
@@ -17,396 +22,400 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartPageState extends State<CartPage> {
+
+
+final _key = GlobalKey<FormState>();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var user = FirebaseAuth.instance;
   bool isLoading = false;
+  String _preference = '';
+   String _address = '';
+   String _phonenumber = '';
   @override
   Widget build(BuildContext context) {
+
+
+
+
+    
     var cartFood = Provider.of<CartItems>(context).cartlist;
+
+
+
+
     var total = Provider.of<CartItems>(context).totalAmount;
 
-    return Scaffold(
-        body: SafeArea(
-      child: Column(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(15),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Container(
-                  margin: const EdgeInsets.all(10),
-                  child: GestureDetector(
-                    onTap: (() {
-                      Navigator.of(context).pop();
-                    }),
-                    child: const Icon(
-                      Icons.arrow_back_ios_new,
-                      size: 20,
-                    ),
-                  ),
-                ),
-                const Text(
-                  " Cart",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
 
-                    // color: Color(0xff544646)
-                  ),
+
+
+_placeorder() {
+
+final isValid = _key.currentState!.validate();
+   
+      if (kDebugMode) {
+        print(isValid);
+      }
+      if (isValid) {
+        _key.currentState!.save();
+       
+
+
+ 
+ setState(() {
+                      isLoading = true;
+                    });
+        final random = Random();
+                    var ordernumber = random.nextIntOfDigits(9);
+                   Provider.of<CartItems>(
+                      context,
+                      listen: false,
+                    ).placeorder(context: context, order: OrderModel(
+                             
+                              totalQuantity: cartFood.length,
+                               address: '', 
+                               dateTime: DateTime.now().toIso8601String(), 
+                               foods: cartFood, 
+                               nameCustomer: user.currentUser!.displayName, 
+                               orderNumber: ordernumber.toString(), 
+                               orderStatus: '', 
+                               phoneNumber: user.currentUser!.phoneNumber ?? _phonenumber  , 
+                               totalPrice: total, 
+                               prefences: _preference,
+                            ),
+                         )
+                        .whenComplete(() => {
+                              if (mounted)
+                                {
+                                  setState(() {
+                                    isLoading = false;
+                                    _preference= '';
+                                  })
+                                }
+                            });
+                 
+        
+
+
+
+
+      }
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    return Scaffold(
+      appBar: AppBar(
+
+        leading:  Container(
+                      margin: const EdgeInsets.all(10),
+                      child: GestureDetector(
+                        onTap: (() {
+                          Navigator.of(context).pop();
+                        }),
+                        child: const Icon(
+                          Icons.arrow_back_ios_new,
+                          size: 20,
+                        ),
+                      ),
+                    ),
+                    centerTitle: true,
+                  title: const Text(
+                      " Cart",
+                      style: TextStyle(
+                        
+                        fontWeight: FontWeight.bold,
+        
+                        // color: Color(0xff544646)
+                      ),
+                    ),
+        ),
+        body:  Form(
+          key:_key ,
+          child: SingleChildScrollView(
+                child: SizedBox(
+            height: MediaQuery.of(context).size.height,
+            child: Column(
+              children: <Widget>[
+               
+                const SizedBox(
+                  height: 10,
                 ),
-                const SizedBox(),
-              ],
-            ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Expanded(
-            child: cartFood.isEmpty
-                ? Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      SizedBox(
-                          height: 200,
-                          width: 200,
-                          child: SvgPicture.asset(cart_empty)),
-                    ],
-                  )
-                : ListView.builder(
-                    itemCount: cartFood.length,
-                    itemBuilder: (context, index) => Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: GestureDetector(
-                                onTap: () {},
-                                onLongPress: () {},
-                                child: Card(
-                                  elevation: 0,
-                                  shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(85),
-                                    topRight: Radius.circular(10),
-                                    bottomLeft: Radius.circular(85),
-                                    bottomRight: Radius.circular(10),
-                                  )),
-                                  child: Container(
-                                    height: 100,
-                                    padding: const EdgeInsets.only(left: 110),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: <Widget>[
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            const SizedBox(
-                                              height: 10,
-                                            ),
-                                            SizedBox(
-                                              width: 100,
-                                              child: Text(
-                                                cartFood[index].title,
-                                                style: const TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 12,
-                                                ),
-                                              ),
-                                            ),
-                                            const SizedBox(
-                                              height: 20,
-                                            ),
-                                            additem(context, cartFood[index]),
-                                            const Expanded(
-                                              child: SizedBox(),
-                                            ),
-                                            SizedBox(
-                                              width: 60,
-                                              child: Text(
-                                                "Ksh ${((int.parse(cartFood[index].price) * cartFood[index].quantity).toString())}",
-                                                style: const TextStyle(
-                                                  color: Color(0xff0A9400),
-                                                  fontSize: 12,
-                                                ),
-                                              ),
-                                            ),
-                                            const SizedBox(
-                                              height: 7,
-                                            ),
-                                          ],
-                                        ),
-                                        Align(
-                                          alignment: Alignment.topCenter,
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(
-                                                top: 7, right: 7),
-                                            child: Container(
-                                                height: 30,
-                                                width: 30,
-                                                decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            100),
-                                                    color: const Color(
-                                                        0xffFFDB84)),
-                                                child: Center(
-                                                  child: Text(
-                                                    "${cartFood[index].quantity}",
-                                                    style: const TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Colors.black,
+                Expanded(
+                  child: cartFood.isEmpty
+                      ? Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            SizedBox(
+                                height: 200,
+                               
+                                child: SvgPicture.asset(cart_empty)),
+                          ],
+                        )
+                      : ListView.builder(
+                          itemCount: cartFood.length,
+                          itemBuilder: (context, index) => Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  Align(
+                                    alignment: Alignment.centerRight,
+                                    child: GestureDetector(
+                                      onTap: () {},
+                                      
+                                      child: Card(
+                                        elevation: 0,
+                                        shape: const RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(85),
+                                          topRight: Radius.circular(10),
+                                          bottomLeft: Radius.circular(85),
+                                          bottomRight: Radius.circular(10),
+                                        )),
+                                        child: Container(
+                                          height: 100,
+                                          padding: const EdgeInsets.only(left: 110),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: <Widget>[
+                                              Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  const SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  SizedBox(
+                                                    width: 100,
+                                                    child: Text(
+                                                      cartFood[index].title,
+                                                      style: const TextStyle(
+                                                        fontWeight: FontWeight.bold,
+                                                        fontSize: 12,
+                                                      ),
                                                     ),
                                                   ),
-                                                )),
+                                                  const SizedBox(
+                                                    height: 20,
+                                                  ),
+                                                  additem(context, cartFood[index]),
+                                                  const Expanded(
+                                                    child: SizedBox(),
+                                                  ),
+                                                  SizedBox(
+                                                    width: 60,
+                                                    child: Text(
+                                                      "Ksh ${((int.parse(cartFood[index].price) * cartFood[index].quantity).toString())}",
+                                                      style: const TextStyle(
+                                                        color: Color(0xff0A9400),
+                                                        fontSize: 12,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 7,
+                                                  ),
+                                                ],
+                                              ),
+                                              Align(
+                                                alignment: Alignment.topCenter,
+                                                child: Padding(
+                                                  padding: const EdgeInsets.only(
+                                                      top: 7, right: 7),
+                                                  child: Container(
+                                                      height: 30,
+                                                      width: 30,
+                                                      decoration: BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                  100),
+                                                          color: const Color(
+                                                              0xffFFDB84)),
+                                                      child: Center(
+                                                        child: Text(
+                                                          "${cartFood[index].quantity}",
+                                                          style: const TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            color: Colors.black,
+                                                          ),
+                                                        ),
+                                                      )),
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    left: 0,
+                                    child: Container(
+                                      height: 100,
+                                      width: 100,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        image: DecorationImage(
+                                            image:
+                                                NetworkImage(cartFood[index].image),
+                                            fit: BoxFit.cover),
+                                      ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    right: 20,
+                                    bottom: 10,
+                                    child: Row(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        const Icon(
+                                          Icons_foodApp.clock,
+                                          size: 14,
+                                          color: Color(0xff707070),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.only(left: 5),
+                                          child: Text(
+                                            cartFood[index].timeFood,
+                                            style: const TextStyle(
+                                              fontSize: 10,
+                                              color: Color(0xff707070),
+                                            ),
                                           ),
                                         )
                                       ],
                                     ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Positioned(
-                              left: 0,
-                              child: Container(
-                                height: 100,
-                                width: 100,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  image: DecorationImage(
-                                      image:
-                                          NetworkImage(cartFood[index].image),
-                                      fit: BoxFit.cover),
-                                ),
-                              ),
-                            ),
-                            Positioned(
-                              right: 20,
-                              bottom: 10,
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  const Icon(
-                                    Icons_foodApp.clock,
-                                    size: 14,
-                                    color: Color(0xff707070),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 5),
-                                    child: Text(
-                                      cartFood[index].timeFood,
-                                      style: const TextStyle(
-                                        fontSize: 10,
-                                        color: Color(0xff707070),
-                                      ),
-                                    ),
                                   )
                                 ],
+                              )),
+                ),
+                cartFood.isEmpty
+                    ? const SizedBox()
+                    : Container(
+                        height: 50,
+                        padding: const EdgeInsets.all(7),
+                        margin: const EdgeInsets.only(
+                          left: 20,
+                          right: 20,
+                          top: 20,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Total',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.green,
+                                fontSize: 14,
                               ),
+                            ),
+                            Text(
+                              'Ksh $total',
+                              style: Theme.of(context).textTheme.bodyText1,
                             )
                           ],
-                        )),
-          ),
-          cartFood.isEmpty
-              ? const SizedBox()
-              : Container(
-                  height: 50,
-                  padding: const EdgeInsets.all(7),
-                  margin: const EdgeInsets.only(
-                    left: 20,
-                    right: 20,
-                    top: 20,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Total',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.green,
-                          fontSize: 14,
                         ),
                       ),
-                      Text(
-                        'Ksh $total',
-                        style: Theme.of(context).textTheme.bodyText1,
-                      )
-                    ],
-                  ),
-                ),
-          cartFood.isEmpty
-              ? const SizedBox()
-              : Container(
-                  padding: const EdgeInsets.all(
-                    10,
-                  ),
-                  child: Row(
-                    children: [
-                      Center(
+          
+          
+          if (cartFood.isNotEmpty && !isLoading)FormInputFieldWithIcon(labelText: 'Preference e.g Crispy, add salad',
+          
+           onchanged: (val ) {  setState(() {
+                    _preference = val!;
+                  }); }, validator: (val) {
+                    return null;
+                   
+                    
+                     // return val!.length < 5 ? 'Too short' : null ;
+                       
+                       },),
+               
+                 if (cartFood.isNotEmpty && !isLoading)  InkWell(
+                    onTap:_placeorder,
+                   
+                    child: Container(
+                      padding: const EdgeInsets.all(5),
+                      margin: const EdgeInsets.all(20),
+                      height: 50,
+                      decoration: const BoxDecoration(
+                        color: Color(0xffFFDB84),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(5.0),
+                        ),
+                      ),
+                      child: const Center(
                         child: Text(
-                          'Payment Method',
+                          ' Proceed to Checkout',
                           style: TextStyle(
-                            color: Theme.of(context).textTheme.bodyText1!.color,
+                            color: Colors.black,
                             fontSize: 15,
                             fontWeight: FontWeight.bold,
                           ),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 5,
-                      ),
-                      const Expanded(
-                        child: Divider(
-                          color: Colors.white10,
-                          thickness: 0.1,
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-          cartFood.isEmpty
-              ? const SizedBox()
-              : Container(
-                  height: 70,
-                  margin:
-                      const EdgeInsets.only(left: 10, right: 10, bottom: 10),
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.white10,
-                      ),
-                      borderRadius: BorderRadius.circular(7.0)),
-                  child: ListTile(
-                    leading: FittedBox(
-                      child: CircleAvatar(
-                          radius: 28,
-                          backgroundColor: Colors.white,
-                          child: SizedBox(
-                            height: 35,
-                            width: 35,
-                            child: Image.asset(
-                              'assets/mpesa.png',
-                            ),
-                          )),
-                    ),
-                    title: Text(
-                      'Mpesa',
-                      style: TextStyle(
-                          color: Theme.of(context).textTheme.bodyText1!.color,
-                          fontSize: 12),
-                    ),
-                    subtitle: Text(
-                      '0727800223',
-                      style: TextStyle(
-                          color: Theme.of(context).textTheme.bodyText1!.color,
-                          fontSize: 12),
-                    ),
-                    trailing: InkWell(
-                      child: Icon(
-                        Icons.arrow_drop_down_sharp,
-                        size: 20,
-                        color: Theme.of(context).iconTheme.color,
-                      ),
-                      onTap: () {
-                        Fluttertoast.showToast(
-                            msg: "More Payment Options To be Added Soon",
-                            toastLength: Toast.LENGTH_SHORT,
-                            gravity: ToastGravity.BOTTOM,
-                            backgroundColor: Colors.white,
-                            textColor: Colors.black);
-                      },
-                    ),
-                  ),
-                ),
-          const Padding(
-            padding: EdgeInsets.only(
-              left: 20,
-              right: 20,
+                        ),),),),
+        
+                         if ( cartFood.isNotEmpty && isLoading)
+                         
+                             CircularProgressIndicator(color: Theme.of(context).iconTheme.color,
+          strokeWidth: 1.0),
+                          
+                         
+          const SizedBox(height: 110,),
+                
+              ],
             ),
-            child: Divider(),
-          ),
-          if (cartFood.isNotEmpty && isLoading)
-            // ignore: dead_code
-            const SizedBox(
-              height: 10,
-            ),
-          if (cartFood.isEmpty) const SizedBox(),
-          if (cartFood.isNotEmpty && isLoading)
-            // ignore: dead_code
-            CircularProgressIndicator(
-              color: Theme.of(context).primaryColor,
-              strokeWidth: 2,
-            ),
-          if (cartFood.isNotEmpty && isLoading)
-            // ignore: dead_code
-            const SizedBox(
-              height: 30,
-            ),
-          if (cartFood.isNotEmpty && !isLoading)
-            GestureDetector(
-              onTap: () {
-                setState(() {
-                  isLoading = true;
-                });
-
-                var ordernumber = 1;
-                Provider.of<CartItems>(
-                  context,
-                  listen: false,
-                )
-                    .placeorder(
-                        OrderModel(
-                          ordernumber.toString(),
-                          total,
-                          cartFood.length,
-                          'Matemo',
-                          '0727800223',
-                          'Mapangala',
-                          'false',
-                          DateTime.now(),
-                        ),
-                        context)
-                    .whenComplete(() => {
-                          if (mounted)
-                            {
-                              setState(() {
-                                isLoading = false;
-                              })
-                            }
-                        });
-              },
-              child: Container(
-                padding: const EdgeInsets.all(5),
-                margin: const EdgeInsets.all(20),
-                height: 50,
-                decoration: const BoxDecoration(
-                  color: Color(0xffFFDB84),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(5.0),
-                  ),
-                ),
-                child: const Center(
-                  child: Text(
-                    'Complete Your Order',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
                 ),
               ),
-            ),
-        ],
-      ),
-    ));
+        ),
+        );
   }
+
+ 
 }
+
+
+
+
+
+
+
+
+
+
+
 
 Widget additem(BuildContext context, FoodModel food) {
   return Row(
@@ -470,6 +479,52 @@ Widget additem(BuildContext context, FoodModel food) {
           color: Theme.of(context).iconTheme.color,
         ),
       ),
+
+
+
+      
     ],
   );
+  
 }
+
+extension RandomOfDigits on Random {
+  /// Generates a non-negative random integer with a specified number of digits.
+  ///
+  /// Supports [digitCount] values between 1 and 9 inclusive.
+  num nextIntOfDigits(int digitCount) {
+    assert(1 <= digitCount && digitCount <= 9);
+    num min = digitCount == 1 ? 0 : pow(10, digitCount - 1);
+    num max = pow(10, digitCount);
+    return min + nextInt(int.parse((max - min).toString()));
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

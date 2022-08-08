@@ -41,22 +41,32 @@ class _HomeState extends State<Home> {
         Provider.of<FoodsProvider>(context).allfoods;
     var _icecream =
         Provider.of<FoodsProvider>(context).iceCream;
+        var _chicken =
+        Provider.of<FoodsProvider>(context).chicken;
+         var _fries =
+        Provider.of<FoodsProvider>(context).fries;
+        var _drinks =
+        Provider.of<FoodsProvider>(context).juice;
+
+if (kDebugMode) {
+  print('this is chicken $_chicken');
+}
     var cartFood = Provider.of<CartItems>(context);
     List<Widget> tabWidgets = <Widget>[
       FoodGrid(
         foodModel: _allfood,
       ),
       FoodGrid(
-        foodModel: _icecream,
+        foodModel: _fries,
       ),
       FoodGrid(
-        foodModel: _allfood,
+        foodModel: _chicken,
       ),
-      const FoodGrid(
-        foodModel: [],
+    FoodGrid(
+        foodModel: _icecream,
       ),
-      const FoodGrid(
-        foodModel: [],
+     FoodGrid(
+        foodModel: _drinks,
       ),
     ];
     ThemeProvider themeProvider =
