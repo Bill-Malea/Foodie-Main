@@ -1,17 +1,21 @@
 import 'dart:convert';
 import 'dart:io';
-
+import 'dart:math';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:foodie/Models/Ordermodel.dart';
-
 import 'package:mpesa_flutter_plugin/initializer.dart';
 import 'package:mpesa_flutter_plugin/payment_enums.dart';
 import 'package:http/http.dart' as http;
 import '../Models/foodModel.dart';
+import '../Screens/Payment.dart';
 
 class CartItems extends ChangeNotifier {
+var user = FirebaseAuth.instance;
+Random random = Random();
   Map<String, FoodModel> _items = {};
 
   List<FoodModel> get cartlist {
@@ -57,7 +61,7 @@ class CartItems extends ChangeNotifier {
           quantity: existingCartItem.quantity + 1,
           category: existingCartItem.category,
           image: existingCartItem.image,
-          desc: existingCartItem.desc,
+          description: existingCartItem.description,
           timeFood: existingCartItem.timeFood,
           typeFood: existingCartItem.typeFood,
         ),
@@ -72,7 +76,7 @@ class CartItems extends ChangeNotifier {
           quantity: 1,
           typeFood: food.typeFood,
           category: food.category,
-          desc: food.desc,
+          description: food.description,
           image: food.image,
           timeFood: food.timeFood,
         ),
@@ -98,11 +102,9 @@ class CartItems extends ChangeNotifier {
                 title: existingCartItem.title,
                 price: existingCartItem.price,
                 quantity: existingCartItem.quantity - 1,
-                desc: '',
+                description: '',
                 category: '',
                 image: '',
-          
-             
                 timeFood: '',
                 typeFood: '',
               ));
@@ -117,25 +119,43 @@ class CartItems extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> placeorder(
-      OrderModel order, BuildContext context) async {
+  Future<void> placeorder({
+      required OrderModel order, required BuildContext context}) async {
+final uid = user.currentUser?.uid;
+   
+List foodsmap =[];
+  for (var food in order.foods) { 
+var fooditem = food.toMap();
+ foodsmap.add(fooditem);
+  }
+
+
+   
+ 
     try {
       Uri _uri = Uri.parse(
-          "https://foodie-test-9da37-default-rtdb.firebaseio.com/Orders.json");
+          "https://foodie-test-9da37-default-rtdb.firebaseio.com/Orders/$uid/${order.orderNumber}.json");
       await http
           .post(_uri,
               body: jsonEncode({
-                "Ordernumber": order.orderNumber,
                 "Delivery Address": order.address,
-                "Date": order.dateTime.toIso8601String(),
+                "Date": order.dateTime,
                 "Phonenumber": order.phoneNumber,
                 "TotalPrice": order.totalPrice,
+                'Prefence':order.prefences,
                 "DeliveryGuy": "",
-                "DeliveryphoneNumber": "",
-                "Paid": false,
+                "DeliveryGuyphoneNumber": "",
+                'Items': foodsmap ,
+                
               }))
           .then((value) {
         if (value.statusCode == 200) {
+
+          Navigator.of(context)
+                            .push(MaterialPageRoute<void>(
+                          builder: (BuildContext context) =>
+                              Payment(order: order,),
+                        ));
         } else {
           if (kDebugMode) {
             print(
@@ -160,14 +180,17 @@ class CartItems extends ChangeNotifier {
     }
   }
 
-  Future<void> processpayment({
-    required String userPhone,
-    required double amount,
-    required BuildContext context,
-  }) async {
+  Future<void> processpayment(
+    {
+    required OrderModel order,
+    required BuildContext context, required String userPhone,
+  }
+  ) async {
+   final uid = user.currentUser?.uid;
+   
     dynamic transactionInitialisation;
     Uri _uri = Uri.parse(
-        "https://foodie-test-9da37-default-rtdb.firebaseio.com/Mpesa.json");
+        "https://ij6uquqt6wp5bo5rpwprmstbsi0bnvwf.lambda-url.us-east-1.on.aws/$uid/${order.orderNumber}");
 
     try {
       transactionInitialisation =
@@ -188,25 +211,25 @@ class CartItems extends ChangeNotifier {
               passKey:
                   'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919');
 
-      var payload = {
-        'CheckoutRequestID':
-            transactionInitialisation["CheckoutRequestID"]
-      };
+    
       if (transactionInitialisation["ResponseCode"] ==
           '0') {
-        var _result = await http.post(
-            Uri.parse(
-                "https://foodie-test-9da37-default-rtdb.firebaseio.com/CheckoutRequestID.json"),
-            body: jsonEncode(payload));
-        if (kDebugMode) {
-          print('==================${_result.statusCode}');
-          print('==================${_result.body}');
-        }
+        
+
+      Fluttertoast.showToast(
+          msg:
+              "Enter Mpesa pin to complete payment",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0);
       }
 
-      return transactionInitialisation;
+     // return transactionInitialisation;
     } on SocketException {
-      Navigator.of(context).pop();
+     // Navigator.of(context).pop();
 
       Fluttertoast.showToast(
           msg:
