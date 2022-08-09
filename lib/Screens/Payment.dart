@@ -208,7 +208,7 @@ final isValid = _key.currentState!.validate();
               ),
             
                GestureDetector(
-                onTap: null,
+                onTap: _placeorder,
                 
            
        
