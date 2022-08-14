@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -12,6 +11,7 @@ import 'package:mpesa_flutter_plugin/payment_enums.dart';
 import 'package:http/http.dart' as http;
 import '../Models/foodModel.dart';
 import '../Screens/Payment.dart';
+import '../Utilities/Themes.dart';
 
 class CartItems extends ChangeNotifier {
 var user = FirebaseAuth.instance;
@@ -23,9 +23,9 @@ Random random = Random();
     _items.forEach((key, cartItem) {
       _cartlist.add(cartItem);
     });
-
     return _cartlist;
   }
+   
 
   Map<String, FoodModel> get items {
     return {..._items};
@@ -49,7 +49,13 @@ Random random = Random();
     return total;
   }
 
-  void addItem(FoodModel food, String id) {
+
+
+  void addItem(FoodModel food, String id ,) {
+
+
+
+
     if (_items.containsKey(id)) {
       // change quantity...
       _items.update(
@@ -102,11 +108,11 @@ Random random = Random();
                 title: existingCartItem.title,
                 price: existingCartItem.price,
                 quantity: existingCartItem.quantity - 1,
-                description: '',
-                category: '',
-                image: '',
-                timeFood: '',
-                typeFood: '',
+                description:  existingCartItem.description,
+                category:  existingCartItem.category,
+                image:  existingCartItem.image,
+                timeFood:  existingCartItem.timeFood,
+                typeFood:  existingCartItem.typeFood
               ));
     } else {
       _items.remove(productId);
@@ -121,16 +127,13 @@ Random random = Random();
 
   Future<void> placeorder({
       required OrderModel order, required BuildContext context}) async {
-final uid = user.currentUser?.uid;
+     final uid = user.currentUser?.uid;
    
-List foodsmap =[];
-  for (var food in order.foods) { 
-var fooditem = food.toMap();
- foodsmap.add(fooditem);
+     List foodsmap =[];
+     for (var food in order.foods) { 
+     var fooditem = food.toMap();
+     foodsmap.add(fooditem);
   }
-
-
-   
  
     try {
       Uri _uri = Uri.parse(
@@ -142,7 +145,7 @@ var fooditem = food.toMap();
                 "Date": order.dateTime,
                 "Phonenumber": order.phoneNumber,
                 "TotalPrice": order.totalPrice,
-                'Prefence':order.prefences,
+                'Preference':order.prefences,
                 "DeliveryGuy": "",
                 "DeliveryGuyphoneNumber": "",
                 'Items': foodsmap ,
@@ -162,6 +165,8 @@ var fooditem = food.toMap();
                 '=================Errror Place Order${value.body}');
           }
         }
+        foodsmap.clear();
+
       });
     } on SocketException {
       Fluttertoast.showToast(
@@ -180,10 +185,11 @@ var fooditem = food.toMap();
     }
   }
 
-  Future<void> processpayment(
+  Future<String> processpayment(
     {
     required OrderModel order,
-    required BuildContext context, required String userPhone,
+    required BuildContext context, 
+    required String userPhone,
   }
   ) async {
    final uid = user.currentUser?.uid;
@@ -191,7 +197,9 @@ var fooditem = food.toMap();
     dynamic transactionInitialisation;
     Uri _uri = Uri.parse(
         "https://ij6uquqt6wp5bo5rpwprmstbsi0bnvwf.lambda-url.us-east-1.on.aws/$uid/${order.orderNumber}");
-
+if (kDebugMode) {
+  print('$uid/jkjkjkj//${order.orderNumber}');
+}
     try {
       transactionInitialisation =
           await MpesaFlutterPlugin.initializeMpesaSTKPush(
@@ -215,22 +223,61 @@ var fooditem = food.toMap();
       if (transactionInitialisation["ResponseCode"] ==
           '0') {
         
+sucessToast('Enter Mpesa pin to complete payment');
+     
 
-      Fluttertoast.showToast(
-          msg:
-              "Enter Mpesa pin to complete payment",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.green,
-          textColor: Colors.white,
-          fontSize: 16.0);
+
       }
 
-     // return transactionInitialisation;
     } on SocketException {
-     // Navigator.of(context).pop();
+  
+      errorToast("Check Your Internet Connection and Try Again.");
+    } catch (e) {
+      
+      if (kDebugMode) {
+        print("CAUGHT EXCEPTION: " + e.toString());
+      }
+    }
+ return transactionInitialisation["ResponseCode"];
+  }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   Future<bool> getpaymentdetails(
+    {
+    required OrderModel order,
+    required BuildContext context, 
+  }
+  ) async {
+   final uid = user.currentUser?.uid;
+   
+  
+    Uri _uri = Uri.parse(
+        "https://7sux3q66vjlwnd7cwzzb4bmqb40rgpsb.lambda-url.us-east-1.on.aws/$uid/${order.orderNumber}");
+
+    try {
+     
+ var response = await http.get(_uri,);
+if (kDebugMode) {
+  print(response.statusCode);
+   print(response.body);
+}
+      
+
+    } on SocketException {
       Fluttertoast.showToast(
           msg:
               "Check Your Internet Coonection and Try Again.",
@@ -246,5 +293,9 @@ var fooditem = food.toMap();
         print("CAUGHT EXCEPTION: " + e.toString());
       }
     }
+
+
+    return true;
+
   }
 }
