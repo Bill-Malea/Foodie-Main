@@ -1,25 +1,26 @@
 
+
+
+
+
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:foodie/Models/Ordermodel.dart';
 
-import 'Models/Ordermodel.dart';
-
-class OrderItem extends StatelessWidget{
+// ignore: must_be_immutable
+class OrderPaymentScreen extends StatelessWidget{
   final OrderModel order;
-  const OrderItem({Key? key, required this.order}) : super(key: key);
+    bool isloading;
+   OrderPaymentScreen ({Key? key, required this.order,required this.isloading}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-   
- var phone =order.phoneNumber?.substring(0,(order.phoneNumber?.length?? - 1));
-
     return Scaffold(
 
-appBar: AppBar(),
+
       body: Container(
         color: Theme.of(context).cardTheme.color,
-        padding: const EdgeInsets.all(10),
+       padding: const EdgeInsets.all(15),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children:  [
@@ -70,8 +71,7 @@ appBar: AppBar(),
 
 //order list
 SizedBox(
-  height: MediaQuery.of(context).size.height*.5,
-  child: SizedBox(
+  height: MediaQuery.of(context).size.height * 0.45,
   child: ListView.builder(
     itemCount: order.foods.length,
     itemBuilder:((context, index) {
@@ -101,28 +101,36 @@ SizedBox(
 
 Column(
   crossAxisAlignment: CrossAxisAlignment.start,
+
   children: [
   
   Row(
-    children:  [
+mainAxisAlignment: MainAxisAlignment.start,
+    children:
+      [
     Text(order.foods[index].title,style: TextStyle(fontWeight: FontWeight.bold,color:Theme.of(context).textTheme.bodyText1?.color,),),
-   const SizedBox(width: 150,),
-     Text((int.parse(order.foods[index].price)* order.foods[index].quantity).toString(),
-    style: TextStyle(
-      fontSize: 10,
-      fontWeight: FontWeight.bold,color:Theme.of(context).textTheme.bodyText1?.color,),
+  
     
-    )
   ],),
   const SizedBox(height: 10,),
-    Text(order.foods[index].quantity.toString(),
+    Text(order.foods[index].quantity.toString() ,
     style: TextStyle(
       
       fontSize: 10,
       color:Theme.of(context).textTheme.bodyText1?.color,),
    ),
-   const SizedBox(height: 40,)
+    const SizedBox(height: 10,),
+    Text('Ksh ${ int.parse(order.foods[index].price) * order.foods[index].quantity }',
+    style: TextStyle(
+      fontSize: 10,
+      fontWeight: FontWeight.bold,color:Theme.of(context).textTheme.bodyText1?.color,),
+    
+    ),
+   const SizedBox(height: 20,)
+
+   
 ],)
+
    ],
 
 
@@ -130,65 +138,36 @@ Column(
       ),
     );
   })),
-)),
+),
 
-          const Divider(thickness: 1.0,color: Colors.black12,),
-          Padding(
-            padding: const EdgeInsets.only(left:10,right: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
-                 Text('Payment',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 11),),
-                   Text('Delivery',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 11),),
-              ],
-            ),
-          ),
-          const SizedBox(height: 10,),
-          Padding(
-            padding: const EdgeInsets.only(left:10,right: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children:  [
-                 Text('Mpesa ****$phone',style: const TextStyle(fontSize: 11,color: Colors.black54),),
-                   const Text('Address',style: TextStyle(fontSize: 11,color: Colors.black54),),
-              ],
-            ),
-          ),
-          const SizedBox(height: 5,),
-          SizedBox(
-            
-            child: Padding(
-              padding: const EdgeInsets.only(left:10,right: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: const [
-                
-                     Text(' Africa 118, Westlands \n Business Centre, \n 7 Floor,Chiromo Lane,\n Westlands, Nairobi',
-                     style: TextStyle(fontSize: 11,color: Colors.black54),
-                     maxLines: 3,
-                  
-                     ),
-                ],
-              ),
-            ),
-          ),
-
-const SizedBox(height: 10,),
+    
  const Divider(thickness: 1.0,color: Colors.black12,),
- const Text('Order Summary',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 11),),
+  const Text('Order Summary',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 11),),
  const SizedBox(height: 15,),
   Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    children: [
+    children:  [
     const Text('Total',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 11, color: Colors.black54),),
 
      Text('Ksh ${order.totalPrice}',style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 11, ),),
     ],
+  ),   
+  
+  const SizedBox(height: 20,),
+  if(isloading)
+  Center(
+    child: Column(
+      children: [
+        CircularProgressIndicator(
+                      color: Theme.of(context).primaryColor,
+                      strokeWidth: 2,
+                    ),
+const SizedBox(height: 25,),
+            if(isloading)        const Text('Processing payment .......'),
+      ],
+    ),
   ),
-  const SizedBox(height: 15,),
-
-          
-          ],
+    ],
 
         ),
       ),

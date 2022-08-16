@@ -1,16 +1,11 @@
 import 'dart:math';
-import 'dart:ui';
-
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:foodie/Icons_illustrations.dart';
 import 'package:foodie/Models/foodModel.dart';
 import 'package:foodie/Providers/Cartprovider.dart';
 import 'package:provider/provider.dart';
-
 import 'FormInput.dart';
 import 'Models/Ordermodel.dart';
 
@@ -50,45 +45,26 @@ var user = FirebaseAuth.instance;
    String _phonenumber = '';
   @override
   Widget build(BuildContext context) {
-
-
-
-
-    
     var cartFood = Provider.of<CartItems>(context).cartlist;
-
-
-
-
     var total = Provider.of<CartItems>(context).totalAmount;
 
 
+_placeorder() async{
 
-
-_placeorder() {
-
-final isValid = _key.currentState!.validate();
-   
-      if (kDebugMode) {
-        print(isValid);
-      }
+  final isValid = _key.currentState!.validate();
       if (isValid) {
         _key.currentState!.save();
        
-
-
- 
  setState(() {
                       isLoading = true;
                     });
         final random = Random();
                     var ordernumber = random.nextIntOfDigits(9);
-                   Provider.of<CartItems>(
+                await   Provider.of<CartItems>(
                       context,
                       listen: false,
                     ).placeorder(context: context, order: OrderModel(
                              
-                              totalQuantity: cartFood.length,
                                address: '', 
                                dateTime: DateTime.now().toIso8601String(), 
                                foods: cartFood, 
@@ -96,7 +72,7 @@ final isValid = _key.currentState!.validate();
                                orderNumber: ordernumber.toString(), 
                                orderStatus: '', 
                                phoneNumber: user.currentUser!.phoneNumber ?? _phonenumber  , 
-                               totalPrice: total, 
+                               totalPrice: total.toString(), 
                                prefences: _preference,
                             ),
                          )
@@ -120,18 +96,6 @@ final isValid = _key.currentState!.validate();
 
 
   }
-
-
-
-
-
-
-
-
-
-
-
-
 
     return Scaffold(
       appBar: AppBar(

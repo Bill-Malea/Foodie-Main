@@ -16,3 +16,16 @@ errorToast(String msg){
       );
 
 }
+sucessToast(String msg){
+  return 
+ Fluttertoast.showToast(
+        msg:
+          msg,
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.SNACKBAR,
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+        fontSize: 12.0,
+      );
+
+}

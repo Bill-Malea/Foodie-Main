@@ -4,7 +4,6 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:foodie/Providers/Themeprovider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:mpesa_flutter_plugin/mpesa_flutter_plugin.dart';
 import 'AuthScreen/Phoneauth.dart';
@@ -13,7 +12,8 @@ import 'Providers/Cartprovider.dart';
 import 'Providers/FoodsNavbar.dart';
 import 'Providers/Foodsprovider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
+
+import 'Providers/Ordersprovider.dart';
 void main() async {
 
      WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -37,6 +37,11 @@ bool theme = preferences.read("isDarkTheme")?? false ;
       ChangeNotifierProvider(
         create: (context) => CartItems(),
       ),
+ChangeNotifierProvider(
+        create: (context) => OrdersProvider(),
+      ),
+
+
     ],
     child: ChangeNotifierProvider(
         create: (context) => ThemeProvider(
@@ -65,6 +70,7 @@ class _MyAppState extends State<MyApp> {
   
     Future.delayed(Duration.zero,() {
         Provider.of< FoodsProvider>(context,listen: false).loadfoods();
+        Provider.of< OrdersProvider>(context,listen: false).loadorders();
     });
   }
 

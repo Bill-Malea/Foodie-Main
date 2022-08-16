@@ -2,8 +2,8 @@ import 'package:foodie/Models/foodModel.dart';
 
 class OrderModel {
   String orderNumber;
-  double totalPrice;
-  int totalQuantity;
+  String totalPrice;
+
   String address;
   String? phoneNumber;
   String? nameCustomer;
@@ -17,7 +17,6 @@ class OrderModel {
       required this.totalPrice,
       required this.prefences,
       required this.foods,
-      required this.totalQuantity,
       required this.address,
       required this.phoneNumber,
       required this.nameCustomer,

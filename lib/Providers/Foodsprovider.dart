@@ -193,9 +193,6 @@ class FoodsProvider extends ChangeNotifier {
           notifyListeners();
          
 var category = _data['Name'].toString().trim().toLowerCase(); 
-if (kDebugMode) {
-            print('00000000000000000000 $category');
-          }
 
 if( category == 'fries'){
 fry.add(FoodModel(
@@ -266,7 +263,7 @@ drink.add(FoodModel(
             price:subcategory["Price"]??'',
              category:  _data['Name']??'', 
             quantity: 0, 
-            timeFood: '25',
+            timeFood:  _data['Timefood']??'',
             typeFood:_data['Name']??'' ,
           ));
                    _juice = drink;

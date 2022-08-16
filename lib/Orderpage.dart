@@ -1,18 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:foodie/Orderslist.dart';
+import 'package:foodie/Providers/Ordersprovider.dart';
+import 'package:provider/provider.dart';
 
 class OrderPage extends StatelessWidget{
   const OrderPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+
+    var orders = Provider.of<OrdersProvider>(context).orders;
     return Scaffold(
 
       appBar: AppBar(),
       body: Container(
   color:Theme.of(context).cardTheme.color,
         padding: const EdgeInsets.all(10),
-        child: ListView.builder(itemBuilder: ((context, index) {
+        child: ListView.builder(
+          itemCount: orders.length ,
+          itemBuilder: ((context, index) {
           return SizedBox(
             height: 70,
             child: InkWell(
@@ -21,12 +27,12 @@ class OrderPage extends StatelessWidget{
                         MaterialPageRoute<void>(
                             builder:
                                 (BuildContext context) =>
-                                    const OrderItem ()));
+                                     OrderItem (order: orders[index],)));
               },
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                 Text('Order No: 341144561',
+                 Text('Order No: ${orders[index].orderNumber}',
               style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold,
               
               color: Theme.of(context).textTheme.bodyText1?.color),
