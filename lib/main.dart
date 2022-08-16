@@ -4,15 +4,16 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:foodie/Providers/Themeprovider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:hive/hive.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:mpesa_flutter_plugin/mpesa_flutter_plugin.dart';
 import 'AuthScreen/Phoneauth.dart';
 import 'MainPage.dart';
 import 'Providers/Cartprovider.dart';
-import 'Providers/FoodsNavbar.dart';
+import 'Providers/Utilityprovider.dart';
 import 'Providers/Foodsprovider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
 import 'Providers/Ordersprovider.dart';
 void main() async {
 
@@ -20,6 +21,8 @@ void main() async {
    FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   await Firebase.initializeApp();
   await GetStorage.init();
+  final appDocumentDirectory = await getApplicationDocumentsDirectory();
+  Hive.init(appDocumentDirectory.path);
 var preferences = GetStorage();
 bool theme = preferences.read("isDarkTheme")?? false ;
   MpesaFlutterPlugin.setConsumerKey(
@@ -32,7 +35,7 @@ bool theme = preferences.read("isDarkTheme")?? false ;
         create: (context) => FoodsProvider(),
       ),
       ChangeNotifierProvider(
-        create: (context) => FoodNavBar(),
+        create: (context) => Utilityprovider(),
       ),
       ChangeNotifierProvider(
         create: (context) => CartItems(),

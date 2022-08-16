@@ -11,7 +11,19 @@ class OrderModel {
   String dateTime;
   List<FoodModel> foods;
    String prefences;
-
+factory OrderModel.fromJson(Map<String, Object> json) {
+    return OrderModel(
+      address: json['address'].toString(),
+      dateTime: '',
+      foods: [],
+      nameCustomer: '',
+     orderNumber: '',
+      orderStatus: '',
+       phoneNumber: '',
+       prefences: '',
+        totalPrice: '',
+        );
+  }
   OrderModel( {
       required this.orderNumber,
       required this.totalPrice,

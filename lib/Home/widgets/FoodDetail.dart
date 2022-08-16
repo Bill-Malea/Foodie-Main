@@ -1,5 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:foodie/Models/foodModel.dart';
+import 'package:foodie/Providers/Utilityprovider.dart';
 import 'package:provider/provider.dart';
 
 import '../../Providers/Cartprovider.dart';
@@ -14,16 +16,35 @@ class FoodDetail extends StatefulWidget {
 }
 
 class _FoodDetailState extends State<FoodDetail> {
+
+// ignore: prefer_typing_uninitialized_variables
+var  isfavourite;
+
   @override
   Widget build(BuildContext context) {
 
+  Provider.of< Utilityprovider>(context).favouritess(widget.food.id).then((value) {
+    setState(() {
+      isfavourite = value;
+    });
+  });
+ favourite () async{
 
+
+  if(!isfavourite){
+Provider.of<Utilityprovider>(context,listen: false).savefavourite(widget.food);
+  }  else {
+    Provider.of<Utilityprovider>(context,listen: false).removefavourite(widget.food.id);   
+  }
+
+ 
+}
      var quantity = Provider.of<CartItems>(context)
                 .itemquantity(widget.food.id);
     return Scaffold(
         body: Column(
       children: [
-        Topimage(food: widget.food),
+        Topimage(food: widget.food, isfavourite: isfavourite ?? false,fn: favourite,),
         SizedBox(
           child: Column(
             children: [
@@ -37,7 +58,7 @@ class _FoodDetailState extends State<FoodDetail> {
                       MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'French Fries',
+                      widget.food.title,
                       style: TextStyle(
                           fontSize: 22,
                           color: Theme.of(context)
@@ -224,8 +245,11 @@ class _FoodDetailState extends State<FoodDetail> {
   }
 }
 
+// ignore: must_be_immutable
 class Topimage extends StatelessWidget {
-  const Topimage({
+  bool isfavourite;
+  dynamic fn;
+   Topimage({ required this.isfavourite,required this.fn,
     Key? key,
     required this.food,
   }) : super(key: key);
@@ -238,7 +262,7 @@ class Topimage extends StatelessWidget {
       child: Column(
         children: [
           const SizedBox(
-            height: 40,
+            height: 50,
           ),
           Row(
             mainAxisAlignment:
@@ -246,7 +270,7 @@ class Topimage extends StatelessWidget {
             children: [
               Container(
                 margin: const EdgeInsets.all(10),
-                child: GestureDetector(
+                child: InkWell(
                   onTap: (() {
                     Navigator.of(context).pop();
                   }),
@@ -259,9 +283,13 @@ class Topimage extends StatelessWidget {
               Container(
                 margin: const EdgeInsets.all(10),
                 child: GestureDetector(
-                  onTap: (() {}),
-                  child: const Icon(
+                  onTap: fn,
+                  child: !isfavourite ?  const Icon(
                     Icons.favorite_border_rounded,
+                    size: 22,
+                  ):const Icon(
+                    Icons.favorite,
+                    color: Colors.red,
                     size: 22,
                   ),
                 ),

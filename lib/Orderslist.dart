@@ -12,7 +12,7 @@ class OrderItem extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
    
- var phone =order.phoneNumber?.substring(0,(order.phoneNumber?.length?? - 1));
+ var phone =order.phoneNumber?.substring(9,(order.phoneNumber?.length?? - 1));
 
     return Scaffold(
 
@@ -70,7 +70,7 @@ appBar: AppBar(),
 
 //order list
 SizedBox(
-  height: MediaQuery.of(context).size.height*.5,
+  height: MediaQuery.of(context).size.height*.4,
   child: SizedBox(
   child: ListView.builder(
     itemCount: order.foods.length,
@@ -106,22 +106,24 @@ Column(
   Row(
     children:  [
     Text(order.foods[index].title,style: TextStyle(fontWeight: FontWeight.bold,color:Theme.of(context).textTheme.bodyText1?.color,),),
-   const SizedBox(width: 150,),
-     Text((int.parse(order.foods[index].price)* order.foods[index].quantity).toString(),
-    style: TextStyle(
-      fontSize: 10,
-      fontWeight: FontWeight.bold,color:Theme.of(context).textTheme.bodyText1?.color,),
-    
-    )
+  
+     
   ],),
   const SizedBox(height: 10,),
-    Text(order.foods[index].quantity.toString(),
+    Text('Qty: ${order.foods[index].quantity.toString()}',
     style: TextStyle(
       
       fontSize: 10,
       color:Theme.of(context).textTheme.bodyText1?.color,),
    ),
-   const SizedBox(height: 40,)
+   const SizedBox(height: 10,),
+   Text((int.parse(order.foods[index].price)* order.foods[index].quantity).toString(),
+    style: TextStyle(
+      fontSize: 10,
+      fontWeight: FontWeight.bold,color:Theme.of(context).textTheme.bodyText1?.color,),
+    
+    ),
+   
 ],)
    ],
 
@@ -154,17 +156,17 @@ Column(
               ],
             ),
           ),
-          const SizedBox(height: 5,),
+          const SizedBox(height: 10,),
           SizedBox(
             
             child: Padding(
               padding: const EdgeInsets.only(left:10,right: 10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
-                children: const [
+                children:  [
                 
-                     Text(' Africa 118, Westlands \n Business Centre, \n 7 Floor,Chiromo Lane,\n Westlands, Nairobi',
-                     style: TextStyle(fontSize: 11,color: Colors.black54),
+                     Text(order.address,
+                     style: const TextStyle(fontSize: 11,color: Colors.black54),
                      maxLines: 3,
                   
                      ),

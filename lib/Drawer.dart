@@ -2,10 +2,13 @@ import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:foodie/Icons_illustrations.dart';
+import 'package:foodie/Providers/Themeprovider.dart';
 import 'package:foodie/Utilities/Themes.dart';
 import 'package:foodie/Utilities/icon_custom_icons.dart';
 import 'package:foodie/Wishlist.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'Orderpage.dart';
@@ -19,8 +22,12 @@ class Drawerwidg extends StatefulWidget {
 
 class _DrawerwidgState extends State<Drawerwidg> {
   bool isLoading = false;
+
+   bool themeSwitch = false;
   @override
   Widget build(BuildContext context) {
+     ThemeProvider themeProvider =
+        Provider.of<ThemeProvider>(context, listen: false);
    
     itemsdrawer(IconData icon,String name,dynamic fn){
       return InkWell(
@@ -64,8 +71,31 @@ const SizedBox(width: 10),
           children:  [
           
           const SizedBox(
-            height: 180,
+            height: 140,
           ),
+ GestureDetector(
+            onTap: () {
+//  GoogleSignIn().signOut();
+// FirebaseAuth.instance.signOut();
+
+              setState(() {
+                themeSwitch = !themeSwitch;
+                themeProvider.swapTheme();
+              });
+            },
+            child: themeSwitch
+                ? const Icon(
+                    Icons_foodApp.white_mode,
+                  )
+                : const Icon(
+                    Icons_foodApp.dark_mode,
+                  ),
+          ),
+
+const SizedBox(
+            height: 40,
+          ),
+
           const Divider(
             color: Colors.black12,
             thickness: 1.0,

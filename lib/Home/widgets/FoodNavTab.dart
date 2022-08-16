@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../Providers/FoodsNavbar.dart';
+import '../../Providers/Utilityprovider.dart';
 import '../../Utilities/icon_custom_icons.dart';
 import 'TabItem.dart';
 
@@ -17,7 +17,7 @@ class _NavigationTabsState extends State<NavigationTabs> {
   @override
   Widget build(BuildContext context) {
     final selected =
-        Provider.of<FoodNavBar>(context).selected;
+        Provider.of<Utilityprovider>(context).selected;
     return Container(
    
      decoration: const BoxDecoration(
@@ -35,7 +35,7 @@ class _NavigationTabsState extends State<NavigationTabs> {
             active: selected[0],
             touched: () {
               setState(() {
-                Provider.of<FoodNavBar>(context,
+                Provider.of<Utilityprovider>(context,
                         listen: false)
                     .select(0);
               });
@@ -50,7 +50,7 @@ class _NavigationTabsState extends State<NavigationTabs> {
             active: selected[1],
             touched: () {
               setState(() {
-                Provider.of<FoodNavBar>(context,
+                Provider.of<Utilityprovider>(context,
                         listen: false)
                     .select(1);
               });
@@ -65,7 +65,7 @@ class _NavigationTabsState extends State<NavigationTabs> {
             active: selected[2],
             touched: () {
               setState(() {
-                Provider.of<FoodNavBar>(context,
+                Provider.of<Utilityprovider>(context,
                         listen: false)
                     .select(2);
               });
@@ -80,7 +80,7 @@ class _NavigationTabsState extends State<NavigationTabs> {
             active: selected[3],
             touched: () {
               setState(() {
-                Provider.of<FoodNavBar>(context,
+                Provider.of<Utilityprovider>(context,
                         listen: false)
                     .select(3);
               });
@@ -95,7 +95,7 @@ class _NavigationTabsState extends State<NavigationTabs> {
             active: selected[4],
             touched: () {
               setState(() {
-                Provider.of<FoodNavBar>(context,
+                Provider.of<Utilityprovider>(context,
                         listen: false)
                     .select(4);
               });

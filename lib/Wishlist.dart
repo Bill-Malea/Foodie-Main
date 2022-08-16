@@ -1,19 +1,34 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:foodie/Models/foodModel.dart';
+import 'package:foodie/Providers/Cartprovider.dart';
+import 'package:foodie/Providers/Utilityprovider.dart';
+import 'package:provider/provider.dart';
 
-import 'Home/widgets/FoodDetail.dart';
-
-
-class Wishlist extends StatelessWidget{
+class Wishlist extends StatefulWidget{
   const Wishlist({Key? key}) : super(key: key);
 
   @override
+  State<Wishlist> createState() => _WishlistState();
+}
+
+class _WishlistState extends State<Wishlist> {
+  @override
+  void didChangeDependencies() {
+     Provider.of<Utilityprovider>(context,listen: false).favourites();
+    super.didChangeDependencies();
+  }
+  @override
   Widget build(BuildContext context) {
+
+   var wishlist =  Provider.of<Utilityprovider>(context).favouriteslist();
     return Scaffold(
       appBar: AppBar(title: const Text('Favourites'),centerTitle: true,),
       body: ListView.builder(
-        itemCount: 5,
+        itemCount: wishlist.length,
         itemBuilder: ((BuildContext ctx, index){
           return Container(
 margin: const EdgeInsets.only(top: 10,right: 10,left: 10),
@@ -62,7 +77,7 @@ child: Container(
   
        Icons.star,
   
-       color: Color(0xffffb800),
+       color: Colors.red,
   
        size: 10,
   
@@ -76,35 +91,40 @@ child: Container(
   
   ),
   
-  Container(
-  
-       decoration: const BoxDecoration(
-  
-      borderRadius: BorderRadius.only(bottomLeft:Radius.circular(10),
-  
-      topRight:Radius.circular(15) ),  
-  
-        color:   Colors.red,
-  
-    ),
-  
-  height: 25,
-  
-  width: 37,
-  
-  child:const Icon(
-  
-       Icons.remove,
-  
-       color: Colors.white,
-  
-       size: 18,
-  
-     ),)
+  InkWell(
+    onTap: (){
+      Provider.of<Utilityprovider>(context,listen: false).removefavourite(wishlist[index].id);
+    },
+    child: Container(
+    
+         decoration: const BoxDecoration(
+    
+        borderRadius: BorderRadius.only(bottomLeft:Radius.circular(10),
+    
+        topRight:Radius.circular(15) ),  
+    
+          color:   Colors.red,
+    
+      ),
+    
+    height: 25,
+    
+    width: 37,
+    
+    child:const Icon(
+    
+         Icons.remove,
+    
+         color: Colors.white,
+    
+         size: 18,
+    
+       ),),
+  )
   
     ],),
   
-   fooddetails( context)
+   fooddetails( context, wishlist[index])
   
   
   
@@ -136,7 +156,7 @@ child: Container(
 
 
 
-  fooddetails(BuildContext context){
+  fooddetails(BuildContext context,FoodModel foodModel){
     return  
               SizedBox(
                 height: 120,
@@ -150,16 +170,7 @@ child: Container(
                     left: 0,
                     top: 0,
                     child: GestureDetector(
-                      onTap: (() {
-                        var foodModel;
-                        Navigator.of(context)
-                            .push(MaterialPageRoute<void>(
-                          builder: (BuildContext context) =>
-                              FoodDetail(
-                            food: foodModel,
-                          ),
-                        ));
-                      }),
+                     
                       child: SizedBox(
                         height: 100,
                         width: 100,
@@ -194,7 +205,7 @@ child: Container(
                          
                           SizedBox(
                             child: Column(children:  [
-                              Text('Fries',
+                              Text(foodModel.title,
                               style: TextStyle(fontWeight: FontWeight.bold,
                                
                                       fontSize: 13,
@@ -224,7 +235,7 @@ child: Container(
                   
                     height: 150,
                     width: 200,
-                    child: Text('Lorem ipsum is a name for aa common type of placeholder texta common type of placeholder texta common type of placeholder texta common type of placeholder texta common type of placeholder textcommon type of placeholder text.sense text that still gives an idea of what real words will look like in the final product',
+                    child: Text(foodModel.description,
                                     maxLines: 4,
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
@@ -239,43 +250,37 @@ Positioned(
   bottom: 0,
   child:   GestureDetector(
   
-                                  // onTap: () {
+                                  onTap: () {
   
-                                  //   var cartitems = Provider
+                                    var cartitems = Provider
   
-                                  //           .of<CartItems>(
+                                            .of<CartItems>(
   
-                                  //               context,
+                                                context,
   
-                                  //               listen: false)
+                                                listen: false)
   
-                                  //       .items
+                                        .items
   
-                                  //       .containsKey(_id);
+                                        .containsKey(foodModel.id);
   
-                                  //   if (!cartitems) {
+                                    if (!cartitems) {
   
-                                  //     Provider.of<CartItems>(
+                                      Provider.of<CartItems>(
   
-                                  //             context,
+                                              context,
   
-                                  //             listen: false)
+                                              listen: false)
   
-                                  //         .addItem(
+                                          .addItem(foodModel,foodModel.id);
   
-                                  //             foodModel[
+                                    } else {
   
-                                  //                 index],
+                                      null;
   
-                                  //             _id);
+                                    }
   
-                                  //   } else {
-  
-                                  //     null;
-  
-                                  //   }
-  
-                                  // },
+                                  },
   
                                   child: Container(
                                     margin: const EdgeInsets.all(10),
@@ -310,25 +315,11 @@ Positioned(
                                     child: const Center(
   
                                       child: Text(
-  
-                                        // quantity == null
-  
-                                        //     ? 'Add To Cart'
-  
-                                        //     : quantity
-  
-                                        //         .toString(),
-  
-                                        'Add to',
-  
-                                        style:
-  
-                                            TextStyle(
-  
+                                        'Add to Cart',
+                                         style:
+                                      TextStyle(
                                                 color: Colors
-  
                                                     .black,
-  
                                                 fontSize: 12),
   
                                       ),

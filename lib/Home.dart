@@ -7,7 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:foodie/CartPage.dart';
 import 'package:foodie/Drawer.dart';
-import 'package:foodie/Providers/FoodsNavbar.dart';
+import 'package:foodie/Providers/Utilityprovider.dart';
 import 'package:foodie/Providers/Foodsprovider.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
@@ -28,15 +28,15 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  bool themeSwitch = false;
+
   @override
   Widget build(BuildContext context) {
 
     final selected =
-        Provider.of<FoodNavBar>(context).selected;
+        Provider.of<Utilityprovider>(context).selected;
         
     final selectedindex =
-        Provider.of<FoodNavBar>(context).selectetab;
+        Provider.of<Utilityprovider>(context).selectetab;
     var _allfood =
         Provider.of<FoodsProvider>(context).allfoods;
     var _icecream =
@@ -48,9 +48,6 @@ class _HomeState extends State<Home> {
         var _drinks =
         Provider.of<FoodsProvider>(context).juice;
 
-if (kDebugMode) {
-  print('this is chicken $_chicken');
-}
     var cartFood = Provider.of<CartItems>(context);
     List<Widget> tabWidgets = <Widget>[
       FoodGrid(
@@ -69,13 +66,12 @@ if (kDebugMode) {
         foodModel: _drinks,
       ),
     ];
-    ThemeProvider themeProvider =
-        Provider.of<ThemeProvider>(context, listen: false);
+    
     var _cartitems =
         Provider.of<CartItems>(context, listen: false)
             .itemsCount;
     var _selected =
-        Provider.of<FoodNavBar>(context).selectetab;
+        Provider.of<Utilityprovider>(context).selectetab;
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -125,24 +121,7 @@ if (kDebugMode) {
           const SizedBox(
             width: 20,
           ),
-          GestureDetector(
-            onTap: () {
-//  GoogleSignIn().signOut();
-// FirebaseAuth.instance.signOut();
-
-              setState(() {
-                themeSwitch = !themeSwitch;
-                themeProvider.swapTheme();
-              });
-            },
-            child: themeSwitch
-                ? const Icon(
-                    Icons_foodApp.white_mode,
-                  )
-                : const Icon(
-                    Icons_foodApp.dark_mode,
-                  ),
-          ),
+         
           const SizedBox(
             width: 10,
           ),

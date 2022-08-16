@@ -9,7 +9,7 @@ class OrderPage extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
 
-    var orders = Provider.of<OrdersProvider>(context).orders;
+    var orders = Provider.of<OrdersProvider>(context).orders.reversed.toList();
     return Scaffold(
 
       appBar: AppBar(),
@@ -17,6 +17,7 @@ class OrderPage extends StatelessWidget{
   color:Theme.of(context).cardTheme.color,
         padding: const EdgeInsets.all(10),
         child: ListView.builder(
+           
           itemCount: orders.length ,
           itemBuilder: ((context, index) {
           return SizedBox(
