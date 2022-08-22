@@ -22,31 +22,13 @@ class Payment extends StatefulWidget {
 final _key = GlobalKey<FormState>();
   bool  _isLoading = false;
   bool _processingpayment = false;
+  bool _waitingpayment = false;
 var _phonenumber;
 var user = FirebaseAuth.instance;
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
    @override
    Widget build(BuildContext context) {
-
-
-
-
 
 _placeorder() async{
 
@@ -63,6 +45,7 @@ final isValid = _key.currentState!.validate();
  
  setState(() {
                       _isLoading= true;
+                      
                     });
 
                 await   Provider.of<CartItems>(
@@ -83,15 +66,27 @@ final isValid = _key.currentState!.validate();
 
  setState(() {
                                    
-                                  //      _processingpayment = true;
+                                     _processingpayment = true;
+                                     _waitingpayment = true;
                                    
                                   });
 
               Future.delayed(const Duration(seconds: 10), () {
+                setState(() {
+                  _waitingpayment = true;
+                });
                      Provider.of<CartItems>(
                       context,
                       listen: false,
-                    ).getpaymentdetails(order: widget.order, context: context, );
+                    ).getpaymentdetails(order: widget.order, context: context, ).then((value) {
+  
+
+
+  if(value){
+
+    _waitingpayment = false;
+  }
+                    });
 
                                  });   
 
@@ -124,7 +119,7 @@ final isValid = _key.currentState!.validate();
        
        child:_processingpayment ?
        
-       OrderPaymentScreen(order: widget.order,isloading: _processingpayment,)
+       OrderPaymentScreen(order: widget.order,isloading: _waitingpayment,)
        
        : Container(
 
@@ -223,8 +218,9 @@ padding: const EdgeInsets.all(15),
               validator: (val ) { 
                     return val!.length < 10 ? 'Enter a valid phonenumber' : null ;
                }, 
-              initialValue: '0${user.currentUser?.phoneNumber?.substring(4,13)}',
-               labeltext:user.currentUser?.phoneNumber == null ?  'Enter phonenumber':_phonenumber,),
+              
+              
+               labeltext:'Enter Mpesa Number',),
              const SizedBox(height: 20,),
               if (_isLoading)
                 CircularProgressIndicator(
@@ -291,13 +287,13 @@ padding: const EdgeInsets.all(15),
 
  
 class FormInputField extends StatelessWidget {
-  final String? initialValue;
+  
 
   final String? labeltext;
   const FormInputField({
     Key? key,
   required this.labeltext,
-     required this.initialValue,
+    
     required this.validator,
    
     required this.onchanged,
@@ -312,8 +308,7 @@ class FormInputField extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.all(10),
       child: TextFormField(
-        
-      initialValue: initialValue,
+
         style: const TextStyle(
           fontSize: 16,
         ),
