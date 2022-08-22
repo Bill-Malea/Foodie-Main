@@ -12,7 +12,7 @@ class OrderItem extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
    
- var phone =order.phoneNumber?.substring(9,(order.phoneNumber?.length?? - 1));
+
 
     return Scaffold(
 
@@ -150,9 +150,9 @@ Column(
             padding: const EdgeInsets.only(left:10,right: 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children:  [
-                 Text('Mpesa ****$phone',style: const TextStyle(fontSize: 11,color: Colors.black54),),
-                   const Text('Address',style: TextStyle(fontSize: 11,color: Colors.black54),),
+              children:  const [
+                 Text('Mpesa ****',style: TextStyle(fontSize: 11,color: Colors.black54),),
+                   Text('Address',style: TextStyle(fontSize: 11,color: Colors.black54),),
               ],
             ),
           ),

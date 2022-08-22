@@ -153,7 +153,9 @@ Random random = Random();
               }))
           .then((value) {
         if (value.statusCode == 200) {
-
+if (kDebugMode) {
+  print(order.totalPrice);
+}
           Navigator.of(context)
                             .push(MaterialPageRoute<void>(
                           builder: (BuildContext context) =>
@@ -197,9 +199,6 @@ Random random = Random();
     dynamic transactionInitialisation;
     Uri _uri = Uri.parse(
         "https://ij6uquqt6wp5bo5rpwprmstbsi0bnvwf.lambda-url.us-east-1.on.aws/$uid/${order.orderNumber}");
-if (kDebugMode) {
-  print('$uid/jkjkjkj//${order.orderNumber}');
-}
     try {
       transactionInitialisation =
           await MpesaFlutterPlugin.initializeMpesaSTKPush(
@@ -264,7 +263,7 @@ sucessToast('Enter Mpesa pin to complete payment');
   ) async {
    final uid = user.currentUser?.uid;
    
-  
+bool paid = false;
     Uri _uri = Uri.parse(
         "https://7sux3q66vjlwnd7cwzzb4bmqb40rgpsb.lambda-url.us-east-1.on.aws/$uid/${order.orderNumber}");
 
@@ -295,7 +294,7 @@ if (kDebugMode) {
     }
 
 
-    return true;
+    return false;
 
   }
 }

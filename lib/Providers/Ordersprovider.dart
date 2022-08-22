@@ -53,10 +53,7 @@ for (var food in orderdetails['Items']) {
   quantity: food['quantity']??'',
   ),);}
 
-if (kDebugMode) {
-   print(order);
-  print(orderdetails['TotalPrice'].toString());
-}
+
  raworderlist.add(
 OrderModel(
 address:orderdetails['Delivery Address']??'' , 

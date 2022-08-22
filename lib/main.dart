@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:foodie/Providers/AddressesProvider.dart';
 import 'package:foodie/Providers/Themeprovider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get_storage/get_storage.dart';
@@ -44,7 +45,9 @@ ChangeNotifierProvider(
         create: (context) => OrdersProvider(),
       ),
 
-
+ChangeNotifierProvider(
+        create: (context) => AddressesProvider(),
+      ),
     ],
     child: ChangeNotifierProvider(
         create: (context) => ThemeProvider(
@@ -74,6 +77,7 @@ class _MyAppState extends State<MyApp> {
     Future.delayed(Duration.zero,() {
         Provider.of< FoodsProvider>(context,listen: false).loadfoods();
         Provider.of< OrdersProvider>(context,listen: false).loadorders();
+         Provider.of< AddressesProvider>(context,listen: false).fetchaddresses();
     });
   }
 

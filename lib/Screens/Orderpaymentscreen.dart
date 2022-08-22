@@ -154,6 +154,33 @@ mainAxisAlignment: MainAxisAlignment.start,
   ),   
   
   const SizedBox(height: 20,),
+  if(!isloading) GestureDetector(
+                
+                  
+             
+         
+                  child: Container(
+                    padding: const EdgeInsets.all(5),
+                    margin: const EdgeInsets.all(20),
+                    height: 50,
+                    decoration: const BoxDecoration(
+                      color: Color(0xffFFDB84),
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(5.0),
+                      ),
+                    ),
+                    child: const Center(
+                      child: Text(
+                        'Complete Your Order',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
   if(isloading)
   Center(
     child: Column(
