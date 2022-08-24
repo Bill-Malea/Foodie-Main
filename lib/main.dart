@@ -16,11 +16,15 @@ import 'Providers/Utilityprovider.dart';
 import 'Providers/Foodsprovider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'Providers/Ordersprovider.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
 void main() async {
 
      WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
    FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   await Firebase.initializeApp();
+  await FirebaseAppCheck.instance.activate();
+  
+await FirebaseAppCheck.instance.setTokenAutoRefreshEnabled(true);
   await GetStorage.init();
   final appDocumentDirectory = await getApplicationDocumentsDirectory();
   Hive.init(appDocumentDirectory.path);
@@ -43,6 +47,7 @@ bool theme = preferences.read("isDarkTheme")?? false ;
       ),
 ChangeNotifierProvider(
         create: (context) => OrdersProvider(),
+        
       ),
 
 ChangeNotifierProvider(

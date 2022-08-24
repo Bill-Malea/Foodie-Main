@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,7 @@ import '../Utilities/Themes.dart';
 
 class CartItems extends ChangeNotifier {
 var user = FirebaseAuth.instance;
+
 Random random = Random();
   Map<String, FoodModel> _items = {};
 
@@ -134,12 +136,15 @@ Random random = Random();
      var fooditem = food.toMap();
      foodsmap.add(fooditem);
   }
+ var token = await  FirebaseAppCheck.instance.getToken();
  
     try {
       Uri _uri = Uri.parse(
-          "https://foodie-test-9da37-default-rtdb.firebaseio.com/Orders/$uid/${order.orderNumber}.json");
+          "https://foodie-test-9da37-default-rtdb.firebaseio.com/Orders/$uid/${order.orderNumber}.json",
+          );
       await http
           .post(_uri,
+          headers: {"X-Firebase-AppCheck":token!},
               body: jsonEncode({
                 "Delivery Address": order.address,
                 "Date": order.dateTime,

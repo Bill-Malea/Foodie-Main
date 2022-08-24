@@ -1,17 +1,17 @@
-
+import 'dart:convert';
 import 'dart:io';
-import 'package:dio/dio.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:foodie/Models/Ordermodel.dart';
 import 'package:foodie/Models/foodModel.dart';
-
+import 'package:http/http.dart' as http;
 import '../Utilities/Themes.dart';
 
 class OrdersProvider extends ChangeNotifier {
 
   var user = FirebaseAuth.instance;
-  var dio = Dio();
+
 
  List<OrderModel> _orders = [ ];
   List<OrderModel> get orders {
@@ -23,13 +23,17 @@ class OrdersProvider extends ChangeNotifier {
 
 
   loadorders() async {
+     var token = await  FirebaseAppCheck.instance.getToken();
     var url = 'https://foodie-test-9da37-default-rtdb.firebaseio.com/Orders/${user.currentUser?.uid}.json';
+
     try {
-        var response = await dio.get(url);
+        var response = await http.get( Uri.parse(url),
+      headers: {"X-Firebase-AppCheck":token!},
+        );
 
 
 
-var  data = response.data;
+var  data =  jsonDecode(response.body);
 
 List<OrderModel>  raworderlist =[];
 

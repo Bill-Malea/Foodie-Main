@@ -21,8 +21,8 @@ class _NavigationTabsState extends State<NavigationTabs> {
     return Container(
    
      decoration: const BoxDecoration(
-    borderRadius: BorderRadius.only(topLeft:Radius.circular(20),topRight:Radius.circular(20) ),
-    color: Color(0xffffb800),
+    borderRadius: BorderRadius.only(bottomLeft   :Radius.circular(20),bottomRight:Radius.circular(20) ),
+    color: Color(0xfff7ab0a),
   ),
   padding: const EdgeInsets.only(left: 15,right: 15),
       height: 75,

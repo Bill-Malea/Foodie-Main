@@ -53,17 +53,24 @@ dependencies:
   url_launcher_web: ^2.0.12
   flutter_rating_bar: ^4.0.1
   flutter_native_splash: ^2.1.6
-  dio: ^4.0.6
   hive: ^2.2.3
   path_provider: ^2.0.11
   share_plus: ^4.0.10+1
   share_plus_web: ^3.0.1
+  icons_launcher: ^1.1.8
+  firebase_app_check: ^0.0.6+20
+  
+  
+   
   
 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: ^0.10.0
+
+
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -124,6 +131,8 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+
 flutter_native_splash:
 
   # This package generates native code to customize Flutter's default white native splash screen

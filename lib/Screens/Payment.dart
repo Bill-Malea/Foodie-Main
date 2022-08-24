@@ -78,15 +78,7 @@ final isValid = _key.currentState!.validate();
                      Provider.of<CartItems>(
                       context,
                       listen: false,
-                    ).getpaymentdetails(order: widget.order, context: context, ).then((value) {
-  
-
-
-  if(value){
-
-    _waitingpayment = false;
-  }
-                    });
+                    ).getpaymentdetails(order: widget.order, context: context, );
 
                                  });   
 

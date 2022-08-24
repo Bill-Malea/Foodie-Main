@@ -12,6 +12,7 @@ import 'package:foodie/Providers/Foodsprovider.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 
+import 'Home/widgets/BottomNav.dart';
 import 'Home/widgets/FoodNavTab.dart';
 import 'Home/widgets/FoodsGrid.dart';
 import 'Home/widgets/TabItem.dart';
@@ -28,10 +29,11 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-
+bool themeSwitch = false;
   @override
   Widget build(BuildContext context) {
-
+ ThemeProvider themeProvider =
+        Provider.of<ThemeProvider>(context, listen: false);
     final selected =
         Provider.of<Utilityprovider>(context).selected;
         
@@ -48,7 +50,7 @@ class _HomeState extends State<Home> {
         var _drinks =
         Provider.of<FoodsProvider>(context).juice;
 
-    var cartFood = Provider.of<CartItems>(context);
+    
     List<Widget> tabWidgets = <Widget>[
       FoodGrid(
         foodModel: _allfood,
@@ -67,62 +69,33 @@ class _HomeState extends State<Home> {
       ),
     ];
     
-    var _cartitems =
-        Provider.of<CartItems>(context, listen: false)
-            .itemsCount;
+    
     var _selected =
         Provider.of<Utilityprovider>(context).selectetab;
     return Scaffold(
       appBar: AppBar(
-        actions: [
-          _cartitems == 0
-              ? GestureDetector(
-                  onTap: (() {
-                    Navigator.of(context).push(
-                        MaterialPageRoute<void>(
-                            builder:
-                                (BuildContext context) =>
-                                    const CartPage()));
-                  }),
-                  child: const Icon(
-                    Icons_foodApp.cart,
-                    size: 17,
-                  ),
-                )
-              : GestureDetector(
-                  onTap: (() {
-                    Navigator.of(context).push(
-                        MaterialPageRoute<void>(
-                            builder:
-                                (BuildContext context) =>
-                                    const CartPage()));
-                  }),
-                  child: Badge(
-                    animationType: BadgeAnimationType.scale,
-                    animationDuration:
-                        const Duration(milliseconds: 400),
-                    badgeColor: const Color(0xffff124d),
-                    elevation: 0,
-                    position: BadgePosition.topEnd(
-                        top: 8, end: -8),
-                    child: const Icon(
-                      Icons_foodApp.cart,
-                      size: 17,
-                    ),
-                    badgeContent: Text(
-                      cartFood.itemsCount.toString(),
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ),
+      
+        actions:  [
+        
           const SizedBox(
             width: 20,
           ),
-         
-          const SizedBox(
+          GestureDetector(
+              onTap: () {
+                setState(() {
+                  themeSwitch = !themeSwitch;
+                  themeProvider.swapTheme();
+                });
+              },
+              child: themeSwitch
+                  ? const Icon(
+                      Icons_foodApp.white_mode,
+                    )
+                  : const Icon(
+                      Icons_foodApp.dark_mode,
+                    ),
+            ),
+          SizedBox(
             width: 10,
           ),
         ],
@@ -133,15 +106,11 @@ class _HomeState extends State<Home> {
         elevation: 0,
       ),
        drawer: const Drawerwidg(),
-       bottomNavigationBar: const NavigationTabs (),
+       bottomNavigationBar: const Bottomnav (),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // const SizedBox(
-          //   height: 10,
-          // ),
-         
-         // const NavigationTabs(),
+               const NavigationTabs(),
           tabWidgets.elementAt(_selected),
         ],
       ),

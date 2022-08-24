@@ -1,141 +1,24 @@
+import 'dart:convert';
 import 'dart:io';
-
-import 'package:dio/dio.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:foodie/Models/foodModel.dart';
-
+import 'package:http/http.dart' as http;
 import '../Utilities/Themes.dart';
 
 class FoodsProvider extends ChangeNotifier {
-  var dio = Dio();
+
+ 
   late List<FoodModel> _chicken = [];
    List<FoodModel> _juice = [];
   List<FoodModel> _fries = [];
-
- // ignore: prefer_final_fields
- List<FoodModel> _allfoods = [
-    // FoodModel(
-    //   category: 'cccc',
-    //   typeFood: 'Pizza',
-    //   description: 'jhhvvjv',
-    //   image:
-    //       'https://media.istockphoto.com/photos/diverse-keto-dishes-picture-id1280158821?b=1&k=20&m=1280158821&s=170667a&w=0&h=ibwKxBzWcygq6NMKO5FTD-3ljLvwM8E1WVevw7XSmlk=',
-    
-   
-    //   price: '100',
-    //   quantity: 2,
-    //   timeFood: '10 Min',
-    //   title: 'Fries',
-    //   id: 'F100',
-    // ),
-    // FoodModel(
-    //   category: 'cccc',
-    //   typeFood: 'Pizza',
-    //   description: 'jhhvvjv',
-    //   image:
-    //       'https://metropoltv.co.ke/wp-content/uploads/2022/02/AdobeStock_176847641-1200x800-1-1100x733.jpeg',
-    
-    //   price: '100',
-    //   quantity: 2,
-    //   timeFood: '30 Min',
-    //   title: 'Smokie',
-    //   id: 'S100',
-    // ),
-    // FoodModel(
-    //   category: 'cccc',
-    //   typeFood: 'Pizza',
-    //   description: 'jhhvvjv',
-    //   image:
-    //       'https://media.istockphoto.com/photos/spicy-deep-fried-breaded-chicken-wings-picture-id583848484?k=20&m=583848484&s=612x612&w=0&h=oS5NY9C48rsgQEoNn-m55kpL4SpkBD5fhsnuEq-xGq4=',
-   
-    //   price: '100',
-    //   quantity: 2,
-    //   timeFood: '25 Min',
-    //   title: 'Chicken',
-    //   id: 'C100',
-    // ),
-    // FoodModel(
-    //   category: 'cccc',
-    //   typeFood: 'Pizza',
-    //   description: 'jhhvvjv',
-    //   image:
-    //       'https://metropoltv.co.ke/wp-content/uploads/2022/02/AdobeStock_176847641-1200x800-1-1100x733.jpeg',
-    
-    //   price: '100',
-    //   quantity: 2,
-    //   timeFood: '15 Min',
-    //   title: 'Smokie',
-    //   id: 'S200',
-    // ),
-    // FoodModel(
-    //   category: 'cccc',
-    //   typeFood: 'Pizza',
-    //   description: 'jhhvvjv',
-    //   image:
-    //       'https://metropoltv.co.ke/wp-content/uploads/2022/02/AdobeStock_176847641-1200x800-1-1100x733.jpeg',
-      
-    //   price: '100',
-    //   quantity: 2,
-    //   timeFood: '25 Min',
-    //   title: 'Smokie',
-    //   id: 'S300',
-    // )
-  ];
+ List<FoodModel> _allfoods = [ ];
   List<FoodModel> get allfoods {
     return [..._allfoods];
   }
 
-  List<FoodModel> _icecream = [
-    // FoodModel(
-    //   category: 'cccc',
-    //   typeFood: 'Pizza',
-    //   description: 'jhhvvjv',
-    //   image: 'https://wallpapercave.com/wp/jLof3qL.jpg',
-     
-    //   price: '100',
-    //   quantity: 2,
-    //   timeFood: '20 Min',
-    //   title: 'Vannila',
-    //   id: 'V100',
-    // ),
-    // FoodModel(
-    //   category: 'cccc',
-    //   typeFood: 'Pizza',
-    //   description: 'jhhvvjv',
-    //   image: 'https://wallpaperaccess.com/full/1279270.jpg',
-     
-    //   price: '100',
-    //   quantity: 2,
-    //   timeFood: '30 Min',
-    //   title: 'Strawberry',
-    //   id: 'SI100',
-    // ),
-    // FoodModel(
-    //   category: 'cccc',
-    //   typeFood: 'Pizza',
-    //   description: 'jhhvvjv',
-    //   image:
-    //       'https://c8.alamy.com/comp/MN6C09/chocolate-and-almond-ice-pops-in-a-cluster-overhead-scene-over-a-slate-background-MN6C09.jpg',
-    //   price: '100',
-    //   quantity: 2,
-    //   timeFood: '20 Min',
-    //   title: 'Popsicle',
-    //   id: 'P100',
-    // ),
-    // FoodModel(
-    //   category: 'cccc',
-    //   typeFood: 'Pizza',
-    //   description: 'jhhvvjv',
-    //   image:
-    //       'https://p4.wallpaperbetter.com/wallpaper/108/450/541/food-ice-cream-berry-blueberry-wallpaper-preview.jpg',
-    //   price: '100',
-    //   quantity: 2,
-    //   timeFood: '30 Min',
-    //   title: 'Strawberry',
-    //   id: 'SO100',
-    // ),
-  ];
+  List<FoodModel> _icecream = [ ];
 
   List<FoodModel> get iceCream {
     return [..._icecream];
@@ -158,9 +41,17 @@ class FoodsProvider extends ChangeNotifier {
 
 
   loadfoods() async {
-    const url = 'https://foodie-test-9da37-default-rtdb.firebaseio.com/Foods/.json';
-    try {
-        var response = await dio.get(url);
+var token = await  FirebaseAppCheck.instance.getToken();
+
+    var url = 'https://foodie-test-9da37-default-rtdb.firebaseio.com/Foods/.json';
+
+    if (token != null) {
+       
+
+ try {
+        var response = await http.get(Uri.parse(url),
+        headers: {"X-Firebase-AppCheck":token},
+        );
       
       if (response.statusCode == 200) {
               
@@ -169,7 +60,7 @@ class FoodsProvider extends ChangeNotifier {
           List<FoodModel> fry = [];
            List<FoodModel> chic = [];
             List<FoodModel> drink = [];
-        response.data.forEach((id, _data) {
+       jsonDecode(response.body).forEach((id, _data) {
          
          _data['Subcategories'].forEach(
 
@@ -278,7 +169,7 @@ drink.add(FoodModel(
         
         });
       } else {
-        errorToast(response.data.toString());
+        errorToast(json.decode( response.body.toString()));
       }
     } on SocketException {
      errorToast("Check Your Internet Connection and Try again");
@@ -287,30 +178,28 @@ drink.add(FoodModel(
         print(e.toString());
       }
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    } else {
+       if (kDebugMode) {
+        print('Error: couldnt get an App Check token');
+      }
+        // Error: couldn't get an App Check token.
+    }
+   
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }
