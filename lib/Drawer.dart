@@ -24,11 +24,10 @@ class Drawerwidg extends StatefulWidget {
 class _DrawerwidgState extends State<Drawerwidg> {
   bool isLoading = false;
 
-  bool themeSwitch = false;
+  
   @override
   Widget build(BuildContext context) {
-    ThemeProvider themeProvider =
-        Provider.of<ThemeProvider>(context, listen: false);
+   
 
     itemsdrawer(IconData icon, String name, dynamic fn) {
       return InkWell(
@@ -72,21 +71,7 @@ class _DrawerwidgState extends State<Drawerwidg> {
             const SizedBox(
               height: 140,
             ),
-            GestureDetector(
-              onTap: () {
-                setState(() {
-                  themeSwitch = !themeSwitch;
-                  themeProvider.swapTheme();
-                });
-              },
-              child: themeSwitch
-                  ? const Icon(
-                      Icons_foodApp.white_mode,
-                    )
-                  : const Icon(
-                      Icons_foodApp.dark_mode,
-                    ),
-            ),
+           
             const SizedBox(
               height: 40,
             ),
