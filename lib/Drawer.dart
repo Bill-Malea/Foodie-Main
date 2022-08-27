@@ -1,16 +1,11 @@
 import 'dart:io';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:foodie/Icons_illustrations.dart';
-import 'package:foodie/Providers/Themeprovider.dart';
 import 'package:foodie/Utilities/Themes.dart';
 import 'package:foodie/Wishlist.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import 'Orderpage.dart';
 import 'Screens/Addresses.dart';
 
@@ -27,7 +22,7 @@ class _DrawerwidgState extends State<Drawerwidg> {
   
   @override
   Widget build(BuildContext context) {
-   
+   var user = FirebaseAuth.instance;
 
     itemsdrawer(IconData icon, String name, dynamic fn) {
       return InkWell(
@@ -39,13 +34,14 @@ class _DrawerwidgState extends State<Drawerwidg> {
               Icon(
                 icon,
                 size: 14,
+                color: Theme.of(context).primaryColor,
               ),
               const SizedBox(width: 10),
               Text(
                 name,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 12,
-                  color: Colors.black,
+                  color:   Theme.of(context).textTheme.bodyText1?.color
                 ),
               )
             ],
@@ -53,7 +49,7 @@ class _DrawerwidgState extends State<Drawerwidg> {
         ),
       );
     }
-
+var _displayName = user.currentUser?.displayName;
     return Card(
       color: Theme.of(context).colorScheme.primary,
       shape: const RoundedRectangleBorder(
@@ -68,11 +64,16 @@ class _DrawerwidgState extends State<Drawerwidg> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(
+             const SizedBox(
               height: 140,
+             
             ),
-           
             const SizedBox(
+           
+              height: 40,
+            ),
+             SizedBox(
+                child:   Text(_displayName == null ? '':'Welcome  $_displayName',),
               height: 40,
             ),
             const Divider(
@@ -94,7 +95,7 @@ class _DrawerwidgState extends State<Drawerwidg> {
             itemsdrawer(Icons.card_travel, 'Orders', orders),
             itemsdrawer(Icons.favorite_outline_sharp, 'Wishlist', wishlist),
             itemsdrawer(Icons.place, 'Address', addresses),
-            itemsdrawer(Icons.people, 'Invite', () {}),
+           // itemsdrawer(Icons.people, 'Invite', () {}),
             itemsdrawer(Icons.share, 'Share', _share),
             const SizedBox(
               height: 10,

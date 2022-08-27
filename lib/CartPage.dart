@@ -1,10 +1,13 @@
 import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:foodie/Icons_illustrations.dart';
 import 'package:foodie/Models/foodModel.dart';
+import 'package:foodie/Providers/AddressesProvider.dart';
 import 'package:foodie/Providers/Cartprovider.dart';
+import 'package:foodie/Screens/Payment.dart';
 import 'package:provider/provider.dart';
 import 'FormInput.dart';
 import 'Models/Ordermodel.dart';
@@ -18,33 +21,15 @@ class CartPage extends StatefulWidget {
 
 class _CartPageState extends State<CartPage> {
 
-
 final _key = GlobalKey<FormState>();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 var user = FirebaseAuth.instance;
   bool isLoading = false;
   String _preference = '';
-   String _address = '';
+   var _address;
    String _phonenumber = '';
   @override
   Widget build(BuildContext context) {
+    var _addresses = Provider.of<AddressesProvider>(context).locations;
     var cartFood = Provider.of<CartItems>(context).cartlist;
     var total = Provider.of<CartItems>(context).totalAmount;
 
@@ -60,12 +45,17 @@ _placeorder() async{
                     });
         final random = Random();
                     var ordernumber = random.nextIntOfDigits(9);
-                await   Provider.of<CartItems>(
-                      context,
-                      listen: false,
-                    ).placeorder(context: context, order: OrderModel(
+
+
+
+
+                    
+          Navigator.of(context)
+                            .push(MaterialPageRoute<void>(
+                          builder: (BuildContext context) =>
+                              Payment(order: OrderModel(
                              
-                               address: '', 
+                               address: _address, 
                                dateTime: DateTime.now().toIso8601String(), 
                                foods: cartFood, 
                                nameCustomer: user.currentUser!.displayName, 
@@ -74,19 +64,18 @@ _placeorder() async{
                                phoneNumber: user.currentUser!.phoneNumber ?? _phonenumber  , 
                                totalPrice: total.toString(), 
                                prefences: _preference,
-                            ),
-                         )
-                        .whenComplete(() => {
-                              if (mounted)
-                                {
-                                  setState(() {
-                                    isLoading = false;
-                                    _preference= '';
-                                  })
-                                }
-                            });
-                 
-        
+                            ),),
+                        ));
+
+if(mounted){
+     
+ setState(() {
+                      isLoading = false;
+                    });
+}
+
+
+     
 
 
 
@@ -119,7 +108,6 @@ _placeorder() async{
                         
                         fontWeight: FontWeight.bold,
         
-                        // color: Color(0xff544646)
                       ),
                     ),
         ),
@@ -143,6 +131,8 @@ _placeorder() async{
                                 height: 200,
                                
                                 child: SvgPicture.asset(cart_empty)),
+                                const SizedBox(height: 30,),
+                                const Text('No Items Added To Cart'),
                           ],
                         )
                       : ListView.builder(
@@ -316,7 +306,7 @@ _placeorder() async{
                       ),
           
           
-          if (cartFood.isNotEmpty && !isLoading)FormInputFieldWithIcon(labelText: 'Preference e.g Crispy, add salad',
+          if (cartFood.isNotEmpty && !isLoading)FormInputFieldWithIcon(labelText: 'Preference e.g Crispy, add salad (Optional)',
           
            onchanged: (val ) {  setState(() {
                     _preference = val!;
@@ -327,7 +317,19 @@ _placeorder() async{
                      // return val!.length < 5 ? 'Too short' : null ;
                        
                        },),
-               
+                       
+           if (cartFood.isNotEmpty && !isLoading)     locationsDropDown(_addresses),
+            if (cartFood.isNotEmpty && !isLoading)FormInputFieldWithIcon(labelText: 'Room Number (Optional)',
+          
+           onchanged: (val ) {  setState(() {
+                    _preference = val!;
+                  }); }, validator: (val) {
+                    return null;
+                   
+                    
+                     // return val!.length < 5 ? 'Too short' : null ;
+                       
+                       },),
                  if (cartFood.isNotEmpty && !isLoading)  InkWell(
                     onTap:_placeorder,
                    
@@ -368,7 +370,97 @@ _placeorder() async{
   }
 
  
+
+
+ Widget locationsDropDown(List<String> addresses) {
+  return  Container(
+    margin: const EdgeInsets.only(left: 10,right: 10),
+    child: DropdownButtonFormField(
+    items: addresses.  
+     map((String location) {
+     
+      return DropdownMenuItem(
+        value: location,
+        child:
+            Text(location, style: const TextStyle(
+              fontSize: 14,
+            ),),
+          
+        );
+       }).toList(),
+       onChanged: (value) {
+         
+         setState(() =>  _address = value.toString());
+       },
+       validator: (value){
+
+  if(value == null){
+                   return 'Please Choose A Delivery Address';
+                    }
+
+                  
+       },
+       
+       value: _address,
+       decoration: InputDecoration(
+        hintText: 'Choose Delivery Address',
+            contentPadding: const EdgeInsets.symmetric(
+              vertical: 5,
+              horizontal: 10,
+            ),
+            floatingLabelBehavior: FloatingLabelBehavior.never,
+            border: InputBorder.none,
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(5),
+              borderSide: const BorderSide(
+                width: 0.0,
+                color: Colors.red,
+              ),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(5),
+              borderSide: const BorderSide(
+                width: 0.0,
+              ),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(5),
+              borderSide: const BorderSide(
+                color: Colors.indigo,
+                width: 0.0,
+              ),
+            ),
+            labelStyle: const TextStyle(
+              fontSize: 14,
+            ),
+        
+            filled: true,
+            disabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(5),
+              borderSide: const BorderSide(
+                width: 1.0,
+              ),
+            ),
+            errorStyle: const TextStyle(
+              fontSize: 14,
+            ),
+          ),
+
+
+
+
+
+
+
+
+
+           
+         ),
+  );
 }
+}
+
+
 
 
 

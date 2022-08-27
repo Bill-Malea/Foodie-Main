@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import '../../Icons_illustrations.dart';
 import '../../Providers/Cartprovider.dart';
 import '../../Providers/Utilityprovider.dart';
+import '../../Screens/Addresses.dart';
 import '../../Utilities/icon_custom_icons.dart';
 
 class Bottomnav extends StatefulWidget {
@@ -62,7 +63,7 @@ class _BottomnavState extends State<Bottomnav> {
             Navigator.of(context).push(MaterialPageRoute<void>(
         builder: (BuildContext context) => const OrderPage()));
             },
-           widgt: const Icon(Icons.favorite_outline_sharp,
+           widgt: const Icon(Icons.shopping_basket_outlined,
             size: 14,
             color: Colors.black,
 
@@ -73,9 +74,7 @@ class _BottomnavState extends State<Bottomnav> {
           ),
           TabItemBottomNav(
             text: 'Cart',
-            
             touched: () {
-            
              Navigator.of(context).push(MaterialPageRoute<void>(
         builder: (BuildContext context) => const CartPage()));
             },
@@ -89,6 +88,7 @@ class _BottomnavState extends State<Bottomnav> {
               ? const Icon(
                 Icons_foodApp.cart,
                 size: 17,
+                color: Colors.black,
               )
               : Badge(
                 animationType: BadgeAnimationType.scale,
@@ -101,6 +101,7 @@ class _BottomnavState extends State<Bottomnav> {
                 child: const Icon(
                   Icons_foodApp.cart,
                   size: 17,
+                  color: Colors.black,
                 ),
                 badgeContent: Text(
                   cartFood.itemsCount.toString(),
@@ -145,7 +146,7 @@ class _BottomnavState extends State<Bottomnav> {
             
             touched: () {
               Navigator.of(context).push(MaterialPageRoute<void>(
-        builder: (BuildContext context) => const AddressPage()));
+        builder: (BuildContext context) => const Addresses()));
             },
             widgt: const Icon(Icons.place,
             size: 14,

@@ -4,6 +4,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:foodie/Providers/AddressesProvider.dart';
 import 'package:foodie/Providers/Themeprovider.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:foodie/Screens/LoadingScreen.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
@@ -35,6 +36,7 @@ bool theme = preferences.read("isDarkTheme")?? false ;
   MpesaFlutterPlugin.setConsumerSecret('WCcbntBI1Di9txIa');
   
   runApp(MultiProvider(
+    key: ObjectKey(DateTime.now().toString()),
     providers: [
       ChangeNotifierProvider(
         create: (context) => FoodsProvider(),
@@ -75,17 +77,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
 
- @override
-  void initState() {
-    super.initState();
-  
-    Future.delayed(Duration.zero,() {
-        Provider.of< FoodsProvider>(context,listen: false).loadfoods();
-        Provider.of< OrdersProvider>(context,listen: false).loadorders();
-         Provider.of< AddressesProvider>(context,listen: false).fetchaddresses();
-    });
-  }
-
+ 
   @override
   Widget build(BuildContext context) {
     
@@ -101,7 +93,7 @@ class _MyAppState extends State<MyApp> {
               builder: (BuildContext context, snap) {
              
                  if(snap.hasData){
-                  return const MainPage();
+                  return const LoadingScreen(isorderplacement: false,);
                 }
                 return const VerifyPhone();
               }),

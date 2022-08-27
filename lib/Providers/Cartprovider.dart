@@ -5,12 +5,16 @@ import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:foodie/Models/Ordermodel.dart';
+import 'package:foodie/Providers/Ordersprovider.dart';
 import 'package:mpesa_flutter_plugin/initializer.dart';
 import 'package:mpesa_flutter_plugin/payment_enums.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import '../Models/foodModel.dart';
+import '../Screens/LoadingScreen.dart';
 import '../Screens/Payment.dart';
 import '../Utilities/Themes.dart';
 
@@ -158,14 +162,15 @@ Random random = Random();
               }))
           .then((value) {
         if (value.statusCode == 200) {
-if (kDebugMode) {
-  print(order.totalPrice);
-}
-          Navigator.of(context)
-                            .push(MaterialPageRoute<void>(
-                          builder: (BuildContext context) =>
-                              Payment(order: order,),
-                        ));
+    SchedulerBinding.instance?.addPostFrameCallback((_) {
+       Provider.of<OrdersProvider>(context, listen: false).loadorders();
+       clear() ;
+      Navigator.of(context).pushReplacement(
+            MaterialPageRoute<void>(
+              builder: (BuildContext context) =>    const LoadingScreen(isorderplacement: true,),
+            ),
+          );
+});
         } else {
           if (kDebugMode) {
             print(
@@ -239,7 +244,7 @@ sucessToast('Enter Mpesa pin to complete payment');
     } catch (e) {
       
       if (kDebugMode) {
-        print("CAUGHT EXCEPTION: " + e.toString());
+        print("CAUGHT EXCEPTION:=======PROCESSING PAYMENT ERROR " + e.toString());
       }
     }
  return transactionInitialisation["ResponseCode"];
@@ -268,18 +273,13 @@ sucessToast('Enter Mpesa pin to complete payment');
   ) async {
    final uid = user.currentUser?.uid;
    
-bool paid = false;
+bool paid = true;
     Uri _uri = Uri.parse(
         "https://7sux3q66vjlwnd7cwzzb4bmqb40rgpsb.lambda-url.us-east-1.on.aws/$uid/${order.orderNumber}");
 
     try {
      
  var response = await http.get(_uri,);
-if (kDebugMode) {
-  print(response.statusCode);
-   print(response.body);
-}
-      
 
     } on SocketException {
       Fluttertoast.showToast(
@@ -299,7 +299,7 @@ if (kDebugMode) {
     }
 
 
-    return false;
+    return paid;
 
   }
 }

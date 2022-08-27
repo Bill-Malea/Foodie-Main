@@ -42,15 +42,15 @@ class _TabItemState extends State<TabItem> {
 
                     Icon(widget.icon,
                     size: 22,
-                    color: Colors.black,),
+                    color: Theme.of(context).primaryColor,),
                      const SizedBox(
                       height: 5,
                     ),
                     !widget.active ?  Text(
                       widget.text,
-                      style:const TextStyle(fontSize: 10,
+                      style: TextStyle(fontSize: 10,
                      
-                     color: Colors.black),
+                    color: Theme.of(context).primaryColor,),
                     ):            RotatedBox(
                       quarterTurns: 3,
                       child: AnimatedContainer(
@@ -62,7 +62,7 @@ class _TabItemState extends State<TabItem> {
                         width: 2.0,
                         decoration: BoxDecoration(
                           color: widget.active
-                              ?Colors.black
+                              ?Theme.of(context).primaryColor
                               : Colors.transparent,
                         ),
                       ),

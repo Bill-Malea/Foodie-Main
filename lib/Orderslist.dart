@@ -139,9 +139,9 @@ Column(
             padding: const EdgeInsets.only(left:10,right: 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
-                 Text('Payment',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 11),),
-                   Text('Delivery',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 11),),
+              children:  [
+                 Text('Payment',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 11, color:  Theme.of(context).textTheme.bodyText1?.color,),),
+                   Text('Delivery',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 11, color:  Theme.of(context).textTheme.bodyText1?.color,),),
               ],
             ),
           ),
@@ -150,9 +150,9 @@ Column(
             padding: const EdgeInsets.only(left:10,right: 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children:  const [
-                 Text('Mpesa ****',style: TextStyle(fontSize: 11,color: Colors.black54),),
-                   Text('Address',style: TextStyle(fontSize: 11,color: Colors.black54),),
+              children:  [
+                 Text('Mpesa ****',style: TextStyle(fontSize: 11, color:  Theme.of(context).textTheme.bodyText1?.color,),),
+                   Text('Address',style: TextStyle(fontSize: 11, color:  Theme.of(context).textTheme.bodyText1?.color,),),
               ],
             ),
           ),
@@ -177,12 +177,12 @@ Column(
 
 const SizedBox(height: 10,),
  const Divider(thickness: 1.0,color: Colors.black12,),
- const Text('Order Summary',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 11),),
+ Text('Order Summary',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 11, color:  Theme.of(context).textTheme.bodyText1?.color,),),
  const SizedBox(height: 15,),
   Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
-    const Text('Total',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 11, color: Colors.black54),),
+     Text('Total',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 11,  color:  Theme.of(context).textTheme.bodyText1?.color,),),
 
      Text('Ksh ${order.totalPrice}',style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 11, ),),
     ],

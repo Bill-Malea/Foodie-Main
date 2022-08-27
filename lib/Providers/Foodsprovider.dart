@@ -40,9 +40,9 @@ class FoodsProvider extends ChangeNotifier {
 
 
 
-  loadfoods() async {
+  Future<List<FoodModel>> loadfoods() async {
 var token = await  FirebaseAppCheck.instance.getToken();
-
+ List<FoodModel> sub = [];
     var url = 'https://foodie-test-9da37-default-rtdb.firebaseio.com/Foods/.json';
 
     if (token != null) {
@@ -55,11 +55,12 @@ var token = await  FirebaseAppCheck.instance.getToken();
       
       if (response.statusCode == 200) {
               
-        List<FoodModel> sub = [];
+       
          List<FoodModel> ice = [];
           List<FoodModel> fry = [];
            List<FoodModel> chic = [];
             List<FoodModel> drink = [];
+
        jsonDecode(response.body).forEach((id, _data) {
          
          _data['Subcategories'].forEach(
@@ -168,15 +169,22 @@ drink.add(FoodModel(
         
         
         });
+
+
+        
       } else {
         errorToast(json.decode( response.body.toString()));
       }
+      
     } on SocketException {
      errorToast("Check Your Internet Connection and Try again");
     } catch (e) {
       if (kDebugMode) {
         print(e.toString());
       }
+
+
+   
     }
 
 
@@ -199,6 +207,7 @@ drink.add(FoodModel(
       }
         // Error: couldn't get an App Check token.
     }
+    return sub;
    
   }
 

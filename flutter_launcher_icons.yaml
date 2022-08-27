@@ -6,5 +6,5 @@ flutter_icons:
   android: true
   ios: true
   image_path: "assets/foody icon.png"
-  adaptive_icon_background: "#000000"
+  adaptive_icon_background: "#ffb800"
   adaptive_icon_foreground: "assets/foody icon.png"

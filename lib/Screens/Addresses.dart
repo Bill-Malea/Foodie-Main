@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:foodie/Providers/Ordersprovider.dart';
 import 'package:provider/provider.dart';
@@ -20,6 +21,9 @@ class Addresses extends StatelessWidget{
         itemBuilder: ((context, ind) {
 
           var _locations = _addresses[ind].locations;
+          if (kDebugMode) {
+            print(_locations);
+          }
         return SizedBox(
           
           child: Column(

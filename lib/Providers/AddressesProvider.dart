@@ -6,6 +6,10 @@ import 'package:foodie/Models/AddressModel.dart';
 import 'package:http/http.dart' as http;
 class AddressesProvider extends ChangeNotifier {
 List<AddressModel> _addresses = [];
+List<String> _locations = [];
+ List<String> get locations{
+    return _locations;
+  }
 
   List<AddressModel> get addresses {
     return _addresses;
@@ -22,29 +26,29 @@ List<AddressModel> _addresses = [];
      jsonDecode(response.body).forEach((id, _data) {
             
           List<AddressModel> rawdata = [];
-List<String> _locations = [];
+List<String> _rawlocation = [];
 
 for (var item in _data['Locations']) {
     if (kDebugMode) {
                print(item['Name']);
              }
-  _locations.add(item['Name']); 
+  _rawlocation.add(item['Name']); 
 }
 
 
 rawdata.add(
   AddressModel(
-    locations: _locations, 
+    locations: _rawlocation, 
     region: _data['Region'],
     )); 
-    
+    _locations = _rawlocation;
     _addresses = rawdata;
     notifyListeners();
     });  
 
     }catch(e){
 if (kDebugMode) {
-  print('fgf6464ggfgfghf$e');
+  print('==============+++++FETCH ADDRESES ERRORS$e');
 }
     }
  }

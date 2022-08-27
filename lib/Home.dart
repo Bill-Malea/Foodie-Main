@@ -1,25 +1,14 @@
-import 'dart:ui';
-
-import 'package:badges/badges.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:foodie/CartPage.dart';
 import 'package:foodie/Drawer.dart';
 import 'package:foodie/Providers/Utilityprovider.dart';
 import 'package:foodie/Providers/Foodsprovider.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
-
 import 'Home/widgets/BottomNav.dart';
 import 'Home/widgets/FoodNavTab.dart';
 import 'Home/widgets/FoodsGrid.dart';
-import 'Home/widgets/TabItem.dart';
 import 'Icons_illustrations.dart';
-import 'Providers/Cartprovider.dart';
 import 'Providers/Themeprovider.dart';
-import 'Utilities/icon_custom_icons.dart';
+
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -34,11 +23,6 @@ bool themeSwitch = false;
   Widget build(BuildContext context) {
  ThemeProvider themeProvider =
         Provider.of<ThemeProvider>(context, listen: false);
-    final selected =
-        Provider.of<Utilityprovider>(context).selected;
-        
-    final selectedindex =
-        Provider.of<Utilityprovider>(context).selectetab;
     var _allfood =
         Provider.of<FoodsProvider>(context).allfoods;
     var _icecream =
@@ -95,7 +79,7 @@ bool themeSwitch = false;
                       Icons_foodApp.dark_mode,
                     ),
             ),
-          SizedBox(
+          const SizedBox(
             width: 10,
           ),
         ],

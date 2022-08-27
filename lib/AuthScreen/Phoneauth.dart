@@ -3,6 +3,7 @@
 
 import 'dart:convert';
 import 'package:flutter/services.dart';
+import 'package:foodie/Screens/LoadingScreen.dart';
 import 'package:http/http.dart' as http;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
@@ -21,12 +22,6 @@ class VerifyPhone extends StatefulWidget {
 
 class _VerifyPhoneState extends State<VerifyPhone> {
   
-  final  _googleSignIn = GoogleSignIn(
-  scopes: [
-    'email',
-    'https://www.googleapis.com/auth/contacts.readonly',
-  ],
-);
 
 
   signInWithGoogle() async {
@@ -101,7 +96,7 @@ class _VerifyPhoneState extends State<VerifyPhone> {
           "Verify phone",
           style: TextStyle(
             fontSize: 18,
-            color: Colors.black,
+           
           ),
         ),
       ),
@@ -321,7 +316,7 @@ class _VerifyPhoneState extends State<VerifyPhone> {
         setState(() {
           Navigator.of(context).pushReplacement(
             MaterialPageRoute<void>(
-              builder: (BuildContext context) => const MainPage(),
+              builder: (BuildContext context) => const LoadingScreen(isorderplacement: false,),
             ),
           );
         });

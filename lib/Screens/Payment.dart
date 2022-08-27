@@ -3,12 +3,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:foodie/Screens/ProcessingPayment.dart';
 import 'package:provider/provider.dart';
-
 import '../FormInput.dart';
 import '../Models/Ordermodel.dart';
 import '../Providers/Cartprovider.dart';
-import 'Orderpaymentscreen.dart';
 
 class Payment extends StatefulWidget {
   final OrderModel order;
@@ -21,8 +20,7 @@ class Payment extends StatefulWidget {
  class _PaymentState extends State<Payment> {
 final _key = GlobalKey<FormState>();
   bool  _isLoading = false;
-  bool _processingpayment = false;
-  bool _waitingpayment = false;
+  bool  _processingpayment = false;
 var _phonenumber;
 var user = FirebaseAuth.instance;
 
@@ -33,16 +31,8 @@ var user = FirebaseAuth.instance;
 _placeorder() async{
 
 final isValid = _key.currentState!.validate();
-   
-      if (kDebugMode) {
-        print(isValid);
-      }
       if (isValid) {
         _key.currentState!.save();
-       
-
-
- 
  setState(() {
                       _isLoading= true;
                       
@@ -62,39 +52,32 @@ final isValid = _key.currentState!.validate();
                                 }
                             }).then((val) async{   
 
-   if(val=='0'){
-
+   if(val ==  '0' ) {
  setState(() {
-                                   
-                                     _processingpayment = true;
-                                     _waitingpayment = true;
-                                   
-                                  });
-
-              Future.delayed(const Duration(seconds: 10), () {
-                setState(() {
-                  _waitingpayment = true;
-                });
-                     Provider.of<CartItems>(
-                      context,
-                      listen: false,
-                    ).getpaymentdetails(order: widget.order, context: context, );
-
-                                 });   
-
-}
-                      
+  _processingpayment = true;
+});
+ Future.delayed(const Duration(seconds: 10), () {
  
+Navigator.of(context).pushReplacement(
+            MaterialPageRoute<void>(
+              builder: (BuildContext context) => FetchPayment(order: widget.order,),
+            ),
+          );
+          if(mounted){
+            
+setState(() {
+  _processingpayment = false;
+});
+          }
+          
+          
+          
+           });
 
-
-                            });
+}    });
                  
         
-
-
-
-
-      }
+         }
 
 
 
@@ -106,12 +89,33 @@ final isValid = _key.currentState!.validate();
 
      return Scaffold
      (
-       appBar: AppBar(title: Text( _processingpayment ?'Order':'Payment') ,centerTitle: true,),
-       body: Container(
+       appBar: AppBar(
+            leading:  Container(
+                      margin: const EdgeInsets.all(10),
+                      child: GestureDetector(
+                        onTap: (() {
+                          Navigator.of(context).pop();
+                        }),
+                        child: const Icon(
+                          Icons.arrow_back_ios_new,
+                          size: 20,
+                        ),
+                      ),
+                    ),
+        title: const Text( 'Payment') ,centerTitle: true,),
+       body: _processingpayment ?   
        
-       child:_processingpayment ?
-       
-       OrderPaymentScreen(order: widget.order,isloading: _waitingpayment,)
+       Center(
+  child:   Column(
+  mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      CircularProgressIndicator(strokeWidth: 1,
+      color: Theme.of(context).iconTheme.color,),
+      const SizedBox(height: 30,),
+      const Text('Enter Mpesa Pin To Complete payment')
+    ],
+  )
+)
        
        : Container(
 
@@ -254,7 +258,6 @@ padding: const EdgeInsets.all(15),
             ],
            ),
          ),
-       ),
        ),
      );
    }

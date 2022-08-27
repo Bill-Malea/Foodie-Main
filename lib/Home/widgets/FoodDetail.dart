@@ -1,9 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:foodie/Models/foodModel.dart';
 import 'package:foodie/Providers/Utilityprovider.dart';
 import 'package:provider/provider.dart';
 
+import '../../CartPage.dart';
 import '../../Providers/Cartprovider.dart';
 
 class FoodDetail extends StatefulWidget {
@@ -212,8 +214,16 @@ Provider.of<Utilityprovider>(context,listen: false).savefavourite(widget.food);
                       )),
                 ],
               ),
-              InkWell(
-                onTap: (() {}),
+             quantity == null ?  const SizedBox(): InkWell(
+                onTap: (() {
+
+                  
+Navigator.of(context).push(
+            MaterialPageRoute<void>(
+              builder: (BuildContext context) => const CartPage(),
+            ),
+          );
+                }),
                 child: Container(
                   margin: const EdgeInsets.all(5),
                   padding: const EdgeInsets.all(5),
@@ -296,16 +306,37 @@ class Topimage extends StatelessWidget {
               ),
             ],
           ),
-          Container(
-            height: 280,
+
+
+CachedNetworkImage(
+  imageUrl: food.image,
+  imageBuilder: (context, imageProvider) => Container(
+       
+                       height: 280,
             width: 300,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              image: DecorationImage(
-                  image: NetworkImage(food.image),
-                  fit: BoxFit.cover),
-            ),
-          ),
+     decoration:  BoxDecoration(
+                     
+                          shape: BoxShape.circle,
+                          image: DecorationImage(image: imageProvider,
+          fit: BoxFit.cover,),
+                         
+                        ),
+   
+  ),
+  placeholder: (context, url) => SizedBox(
+    height: 60,
+    child: CircularProgressIndicator(color: Theme.of(context).cardTheme.color,
+    strokeWidth: 1.0),
+  ),
+  errorWidget: (context, url, error) => const SizedBox(
+    
+    
+                       height: 280,
+            width: 300,
+    child: Center(child: Icon(Icons.error))),
+),
+
+
           const SizedBox(
             height: 30,
           )

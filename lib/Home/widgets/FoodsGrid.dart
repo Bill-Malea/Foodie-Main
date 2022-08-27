@@ -24,7 +24,10 @@ class FoodGrid extends StatelessWidget {
             var _id = foodModel[index].id;
             var quantity = Provider.of<CartItems>(context)
                 .itemquantity(_id);
-            return Column(children: [
+            return Column(
+              
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
               SizedBox(
                 height: 250,
                 width: 200,
@@ -57,9 +60,7 @@ class FoodGrid extends StatelessWidget {
                         ));
                       }),
                       child: Container(
-                        
-                        height: 150,
-                        width: 200,
+                   
                         decoration: const BoxDecoration(
                           shape: BoxShape.circle,
                         
@@ -69,7 +70,9 @@ class FoodGrid extends StatelessWidget {
                         child: CachedNetworkImage(
   imageUrl: foodModel[index].image,
   imageBuilder: (context, imageProvider) => Container(
-  
+       
+                        height: 150,
+                        width: 200,
      decoration:  BoxDecoration(
                        color: Colors.red,
                           shape: BoxShape.circle,
@@ -79,9 +82,16 @@ class FoodGrid extends StatelessWidget {
                         ),
    
   ),
-  placeholder: (context, url) => CircularProgressIndicator(color: Theme.of(context).cardTheme.color,
-  strokeWidth: 1.0),
-  errorWidget: (context, url, error) => const Icon(Icons.error),
+  placeholder: (context, url) => SizedBox(
+    height: 60,
+    child: CircularProgressIndicator(color: Theme.of(context).cardTheme.color,
+    strokeWidth: 1.0),
+  ),
+  errorWidget: (context, url, error) => const SizedBox(
+    
+                        height: 150,
+                        width: 200,
+    child: Center(child: Icon(Icons.error))),
 ),
                       ),
                     ),

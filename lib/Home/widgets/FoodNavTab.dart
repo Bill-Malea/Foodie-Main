@@ -20,9 +20,9 @@ class _NavigationTabsState extends State<NavigationTabs> {
         Provider.of<Utilityprovider>(context).selected;
     return Container(
    
-     decoration: const BoxDecoration(
-    borderRadius: BorderRadius.only(bottomLeft   :Radius.circular(20),bottomRight:Radius.circular(20) ),
-    color: Color(0xfff7ab0a),
+     decoration:  BoxDecoration(
+    borderRadius: const BorderRadius.only(bottomLeft   :Radius.circular(20),bottomRight:Radius.circular(20) ),
+    color: Theme.of(context).appBarTheme.backgroundColor,
   ),
   padding: const EdgeInsets.only(left: 15,right: 15),
       height: 75,

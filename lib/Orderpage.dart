@@ -44,7 +44,8 @@ class OrderPage extends StatelessWidget{
                 children:  [
                 
                  Text('Order Date: Jun 20,2022',
-              style: TextStyle(fontSize: 11,color: Theme.of(context).textTheme.caption?.color ),
+              style: TextStyle(fontSize: 11,
+              color: Theme.of(context).textTheme.caption?.color ),
               ),
               Row(
                 children:  [
