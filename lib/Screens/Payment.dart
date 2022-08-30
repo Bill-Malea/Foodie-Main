@@ -21,7 +21,7 @@ class Payment extends StatefulWidget {
 final _key = GlobalKey<FormState>();
   bool  _isLoading = false;
   bool  _processingpayment = false;
-var _phonenumber;
+var _phonenumber = '';
 var user = FirebaseAuth.instance;
 
 
@@ -29,7 +29,6 @@ var user = FirebaseAuth.instance;
    Widget build(BuildContext context) {
 
 _placeorder() async{
-
 final isValid = _key.currentState!.validate();
       if (isValid) {
         _key.currentState!.save();
@@ -37,11 +36,12 @@ final isValid = _key.currentState!.validate();
                       _isLoading= true;
                       
                     });
+                      
 
                 await   Provider.of<CartItems>(
                       context,
                       listen: false,
-                    ).processpayment(context: context,  userPhone: _phonenumber ?? '0${user.currentUser?.phoneNumber?.substring(4,13)}',order: widget.order )
+                    ).processpayment(context: context,  userPhone: _phonenumber.substring(1,10) ,order: widget.order )
                         .whenComplete(() => {
                               if (mounted)
                                 {
@@ -50,17 +50,20 @@ final isValid = _key.currentState!.validate();
                                    
                                   })
                                 }
-                            }).then((val) async{   
+                            }).then((val) async{  
+                            
 
    if(val ==  '0' ) {
  setState(() {
   _processingpayment = true;
 });
  Future.delayed(const Duration(seconds: 10), () {
- 
+  if (kDebugMode) {
+                          print(_phonenumber);
+                        }
 Navigator.of(context).pushReplacement(
             MaterialPageRoute<void>(
-              builder: (BuildContext context) => FetchPayment(order: widget.order,),
+              builder: (BuildContext context) => FetchPayment(order: widget.order, phone: _phonenumber,),
             ),
           );
           if(mounted){
@@ -209,10 +212,14 @@ padding: const EdgeInsets.all(15),
               onchanged: (val ) { 
                  setState(() {
                         _phonenumber = val!;
+                       
                       });
               }, 
               validator: (val ) { 
-                    return val!.length < 10 ? 'Enter a valid phonenumber' : null ;
+                if(val!.length < 10 ){
+                  return 'Enter a valid phonenumber';
+                }
+                
                }, 
               
               

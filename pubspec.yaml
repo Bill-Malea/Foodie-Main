@@ -59,6 +59,7 @@ dependencies:
   share_plus_web: ^3.0.1
   icons_launcher: ^1.1.8
   firebase_app_check: ^0.0.6+20
+  otp_timer_button: ^1.1.0
   
   
    

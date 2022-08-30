@@ -19,7 +19,8 @@ import '../Screens/Payment.dart';
 import '../Utilities/Themes.dart';
 
 class CartItems extends ChangeNotifier {
-var user = FirebaseAuth.instance;
+
+  final user =  FirebaseAuth.instance.currentUser!;
 
 Random random = Random();
   Map<String, FoodModel> _items = {};
@@ -132,19 +133,23 @@ Random random = Random();
   }
 
   Future<void> placeorder({
-      required OrderModel order, required BuildContext context}) async {
-     final uid = user.currentUser?.uid;
+      required OrderModel order, required BuildContext context,required String phone}) async {
+     final uid = user.uid;
    
      List foodsmap =[];
      for (var food in order.foods) { 
      var fooditem = food.toMap();
      foodsmap.add(fooditem);
   }
+
+  //////////////////auth token
+   final idToken = await user.getIdToken();
+   /////////////////App Check Token
  var token = await  FirebaseAppCheck.instance.getToken();
  
     try {
       Uri _uri = Uri.parse(
-          "https://foodie-test-9da37-default-rtdb.firebaseio.com/Orders/$uid/${order.orderNumber}.json",
+          "https://foodie-test-9da37-default-rtdb.firebaseio.com/Orders/$uid/${order.orderNumber}.json?auth=$idToken",
           );
       await http
           .post(_uri,
@@ -152,12 +157,17 @@ Random random = Random();
               body: jsonEncode({
                 "Delivery Address": order.address,
                 "Date": order.dateTime,
-                "Phonenumber": order.phoneNumber,
+                "Phonenumber": phone,
                 "TotalPrice": order.totalPrice,
                 'Preference':order.prefences,
                 "DeliveryGuy": "",
                 "DeliveryGuyphoneNumber": "",
                 'Items': foodsmap ,
+                'Name Customer': order.nameCustomer,
+                'Delivered':order.delivered,
+                'OnTransit':order.ontransit,
+                'Cancelled':order.cancelled,
+
                 
               }))
           .then((value) {
@@ -204,7 +214,7 @@ Random random = Random();
     required String userPhone,
   }
   ) async {
-   final uid = user.currentUser?.uid;
+   final uid = user.uid;
    
     dynamic transactionInitialisation;
     Uri _uri = Uri.parse(
@@ -216,11 +226,11 @@ Random random = Random();
               transactionType:
                   TransactionType.CustomerPayBillOnline,
               amount: 1.0,
-              partyA: '254727800223',
+              partyA: '254$userPhone',
               partyB: "174379",
               callBackURL: _uri,
               accountReference: "shoe",
-              phoneNumber: '254727800223',
+              phoneNumber: '254$userPhone',
               baseUri: Uri(
                   scheme: "https",
                   host: "sandbox.safaricom.co.ke"),
@@ -244,7 +254,7 @@ sucessToast('Enter Mpesa pin to complete payment');
     } catch (e) {
       
       if (kDebugMode) {
-        print("CAUGHT EXCEPTION:=======PROCESSING PAYMENT ERROR " + e.toString());
+        print("CAUGHT EXCEPTION:=======PROCESSING MPESA PAYMENT ERROR " + e.toString());
       }
     }
  return transactionInitialisation["ResponseCode"];
@@ -271,7 +281,7 @@ sucessToast('Enter Mpesa pin to complete payment');
     required BuildContext context, 
   }
   ) async {
-   final uid = user.currentUser?.uid;
+   final uid = user.uid;
    
 bool paid = true;
     Uri _uri = Uri.parse(

@@ -1,6 +1,5 @@
 import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:foodie/Icons_illustrations.dart';
@@ -8,6 +7,7 @@ import 'package:foodie/Models/foodModel.dart';
 import 'package:foodie/Providers/AddressesProvider.dart';
 import 'package:foodie/Providers/Cartprovider.dart';
 import 'package:foodie/Screens/Payment.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:provider/provider.dart';
 import 'FormInput.dart';
 import 'Models/Ordermodel.dart';
@@ -21,18 +21,30 @@ class CartPage extends StatefulWidget {
 
 class _CartPageState extends State<CartPage> {
 
+
+  var preferences = GetStorage();
 final _key = GlobalKey<FormState>();
 var user = FirebaseAuth.instance;
   bool isLoading = false;
   String _preference = '';
    var _address;
-   String _phonenumber = '';
+   var _roomnumber = '';
+  
   @override
   Widget build(BuildContext context) {
     var _addresses = Provider.of<AddressesProvider>(context).locations;
     var cartFood = Provider.of<CartItems>(context).cartlist;
     var total = Provider.of<CartItems>(context).totalAmount;
 
+String _displayName (){
+  
+   var user = FirebaseAuth.instance;
+ var usernamephone = preferences.read("Username${user.currentUser?.uid}",);
+
+var usernamegoogle = user.currentUser?.displayName;
+
+  return usernamegoogle ?? usernamephone;
+}
 
 _placeorder() async{
 
@@ -45,25 +57,25 @@ _placeorder() async{
                     });
         final random = Random();
                     var ordernumber = random.nextIntOfDigits(9);
-
-
-
-
                     
           Navigator.of(context)
                             .push(MaterialPageRoute<void>(
                           builder: (BuildContext context) =>
                               Payment(order: OrderModel(
-                             
-                               address: _address, 
+                                id: '',
+                                roomNumber: _roomnumber,
+                              address: _address, 
                                dateTime: DateTime.now().toIso8601String(), 
                                foods: cartFood, 
-                               nameCustomer: user.currentUser!.displayName, 
+                               nameCustomer: _displayName(), 
                                orderNumber: ordernumber.toString(), 
-                               orderStatus: '', 
-                               phoneNumber: user.currentUser!.phoneNumber ?? _phonenumber  , 
+                               phoneNumber: '' , 
                                totalPrice: total.toString(), 
                                prefences: _preference,
+                               paid: true,
+                               delivered: false, 
+                               ontransit: false,
+                               cancelled: false,
                             ),),
                         ));
 
@@ -73,16 +85,7 @@ if(mounted){
                       isLoading = false;
                     });
 }
-
-
-     
-
-
-
-
       }
-
-
 
   }
 
@@ -322,7 +325,7 @@ if(mounted){
             if (cartFood.isNotEmpty && !isLoading)FormInputFieldWithIcon(labelText: 'Room Number (Optional)',
           
            onchanged: (val ) {  setState(() {
-                    _preference = val!;
+                    _roomnumber = val!;
                   }); }, validator: (val) {
                     return null;
                    

@@ -142,3 +142,138 @@ notifyListeners();
 }
 
 }
+
+
+    String ordermonth (int month){
+      if(month == 2){
+return 'FEB';
+
+      }else if(month == 3){
+return 'MAR';
+      }else if(month == 4){
+return 'APR';
+      }
+      else if(month == 5){
+return 'MAY';
+      }
+      else if(month == 6){
+return 'JUN';
+      }
+      else if(month == 7){
+return 'JUL';
+      }
+      else if(month == 8){
+return 'AUG';
+      }else if(month == 9){
+return 'SEP';
+      }
+      else if(month == 10){
+return 'OCT';
+      }
+      else if(month == 11){
+return 'NOV';
+      }
+      else if(month == 12){
+return 'DEC';
+      }
+     
+     return 'JAN';
+    }
+
+
+    
+    
+
+
+Widget orderstaus({
+  required bool cancelled,
+  required bool delivered,
+  required bool ontransit,}){
+
+
+
+
+    if(cancelled){
+ return Container(
+                padding: const EdgeInsets.all(7),
+                  decoration: const BoxDecoration(
+  
+             borderRadius: BorderRadius.all(Radius.circular(5)),  
+             
+  
+        color:   Colors.red,
+  
+    ),
+  
+  height: 25,
+  
+  width: 70,
+  child:  const Text('Cancelled',style: TextStyle(color: Colors.black,)),
+              );
+    }
+    else if(!delivered && !cancelled){
+return Container(
+                padding: const EdgeInsets.all(7),
+                  decoration: const BoxDecoration(
+  
+             borderRadius: BorderRadius.all(Radius.circular(5)),  
+             
+  
+        color:   Colors.orange,
+  
+    ),
+  
+  height: 25,
+  
+  width: 70,
+  child:  const Text('On Transit',style: TextStyle(color: Colors.black,)),
+              );
+    }else if (ontransit){
+      return Container(
+                padding: const EdgeInsets.all(7),
+                  decoration: const BoxDecoration(
+  
+             borderRadius: BorderRadius.all(Radius.circular(5)),  
+             
+  
+        color:   Colors.greenAccent,
+  
+    ),
+  
+  height: 25,
+  
+  width: 70,
+  child:  const Text('Delivered',style: TextStyle(color: Colors.black,)),
+              );
+    }
+
+
+return Container(
+                padding: const EdgeInsets.all(7),
+                  decoration: const BoxDecoration(
+  
+             borderRadius: BorderRadius.all(Radius.circular(5)),  
+             
+  
+        color:   Colors.greenAccent,
+  
+    ),
+  
+  height: 25,
+  
+  width: 70,
+  child:  const Text('Delivered',style: TextStyle(color: Colors.black,)),
+              );
+
+}
+
+
+
+
+
+    String orderdate (String orderdate){
+     var day = DateTime.parse(orderdate).day;
+      var month = DateTime.parse(orderdate).month;
+      var year = DateTime.parse(orderdate).year;
+     return '${ordermonth(month)} , $day,$year ';
+    }

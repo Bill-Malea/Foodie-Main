@@ -1,9 +1,10 @@
 // ignore: must_be_immutable
 // ignore_for_file: unnecessary_const
-
+import 'package:otp_timer_button/otp_timer_button.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:foodie/Screens/LoadingScreen.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
@@ -68,16 +69,19 @@ class _VerifyPhoneState extends State<VerifyPhone> {
 
 
 
+var preferences = GetStorage();
+
 
 
 
   final _key = GlobalKey<FormState>();
   final _auth = FirebaseAuth.instance;
   var _start;
+  var _username = '';
 
   var _isloading = false;
   var _otpcode = '';
-
+  int? _resendToken;
   var _verificationId;
 
   var _phone = '';
@@ -116,8 +120,32 @@ class _VerifyPhoneState extends State<VerifyPhone> {
                         'Enter your phonenumber to get started',
                         style: TextStyle(color: Colors.black),
                       ),
+                      
+                   !_isloading
+                    ? FormInputFieldWithIcon(
+                      labelText: 'UserName', 
+                    onchanged: (val ) { 
+                        setState(() {
+                      _username = val!;
+                    
+                     
+                    });
+                     }, 
+                     validator: (val) {
                    
+                     
+                     if(val!.isEmpty){
+                   return 'Cannot be blank!';
+                    }  else if (val.length < 4 ){
+                    return   'Please Enter a UserName';
+                     }
+                     return null;
+                      },)
+                    :
                 const SizedBox(
+                  height: 1,
+                ),
+                 const SizedBox(
                   height: 15,
                 ),
                 !_isloading
@@ -172,29 +200,27 @@ class _VerifyPhoneState extends State<VerifyPhone> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            Text(
-                              "Didn't recieve phone ? Resend in 0:${_start.toString()} ",
-                              style: const TextStyle(
+                            const Text(
+                              "Didn't recieve phone Verification ? ",
+                              style: TextStyle(
                                 fontSize: 14,
-                                color: Colors.white,
+                                
                               ),
                             ),
                             const SizedBox(
                               width: 8,
                             ),
-                            GestureDetector(
-                              onTap: () {
-                                if (kDebugMode) {
-                                  print("Resend the phone to the user");
-                                }
-                              },
-                              child: const Text(
-                                "Resend",
-                                style: TextStyle(
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ),
+                           OtpTimerButton(
+              height: 30,
+              
+              onPressed: _verifyPhoneNumber ,
+              text: const Text(
+                'Resend OTP in',
+                style: TextStyle(fontSize: 12,  color: Colors.black,),
+              ),
+              duration: 60,
+            ),
+                          
                           ],
                         ),
                       )
@@ -299,7 +325,7 @@ class _VerifyPhoneState extends State<VerifyPhone> {
       ),
     );
   }
-
+/////////////Verify user when otp code is entered manually
   _verify() async {
     if (_otpcode.isNotEmpty && _otpcode.length == 6) {
       AuthCredential credential = PhoneAuthProvider.credential(
@@ -313,13 +339,17 @@ class _VerifyPhoneState extends State<VerifyPhone> {
                 });
       var val = _val.user?.uid;
       if (val!.isNotEmpty) {
-        setState(() {
+    await preferences.write("Username$val",_username);
+    if(mounted){
+ setState(() {
           Navigator.of(context).pushReplacement(
             MaterialPageRoute<void>(
               builder: (BuildContext context) => const LoadingScreen(isorderplacement: false,),
             ),
           );
         });
+    }
+       
       }
     }
   }
@@ -337,24 +367,35 @@ class _VerifyPhoneState extends State<VerifyPhone> {
               timeout: const Duration(seconds: 60),
               phoneNumber: '+254${_phone.substring(1, 10)}',
               verificationCompleted: (PhoneAuthCredential credential) async {
-                await _auth.signInWithCredential(credential)
+              
+    
+
+            var user =    await _auth.signInWithCredential(credential)
                     .onError((error, stackTrace) {
                   if (kDebugMode) {
                     print('This is error $error');
                   }
                   return errorToast(error.toString());
                 });
-
+var uid = user.user?.uid;
+await preferences.write("Username$uid",_username);
                 setState(() {
                   _otpcode = credential.smsCode!;
-                  Navigator.of(context).pushReplacement(
+                  if(mounted){
+
+ Navigator.of(context).pushReplacement(
                     MaterialPageRoute<void>(
-                      builder: (BuildContext context) => const MainPage(),
+                      builder: (BuildContext context) => const  LoadingScreen(isorderplacement: false,),
                     ),
                   );
+
+                  }
+                 
                 });
               },
+              forceResendingToken: _resendToken,
               verificationFailed: (FirebaseAuthException e) {
+                errorToast('Phone verification Failed');
                 setState(() {
                   _otpcode = '';
                   setState(() {
@@ -365,9 +406,8 @@ class _VerifyPhoneState extends State<VerifyPhone> {
               codeSent: (verificationId, resendToken) async {
                 setState(() {
                   _verificationId = verificationId;
-                  if (kDebugMode) {
-                    print(verificationId);
-                  }
+                  _resendToken = resendToken;
+                 
                 });
               },
               codeAutoRetrievalTimeout: (String timeout) {

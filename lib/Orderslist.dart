@@ -2,17 +2,24 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:foodie/Providers/Ordersprovider.dart';
+import 'package:provider/provider.dart';
 
 import 'Models/Ordermodel.dart';
+import 'Providers/Utilityprovider.dart';
 
-class OrderItem extends StatelessWidget{
+class OrderItem extends StatefulWidget{
   final OrderModel order;
   const OrderItem({Key? key, required this.order}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-   
+  State<OrderItem> createState() => _OrderItemState();
+}
 
+class _OrderItemState extends State<OrderItem> {
+   var _isloading = false;
+  @override
+  Widget build(BuildContext context) {
 
     return Scaffold(
 
@@ -24,7 +31,7 @@ appBar: AppBar(),
           crossAxisAlignment: CrossAxisAlignment.start,
           children:  [
             const SizedBox(height: 10,),
-             Text('Order No: ${order.orderNumber}',
+             Text('Order No: ${widget.order.orderNumber}',
           style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold,
           
           color: Theme.of(context).textTheme.bodyText1?.color),
@@ -34,7 +41,7 @@ appBar: AppBar(),
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children:  [
             
-             Text('Order Date: Jun 20,2022',
+             Text('Order Date: ${orderdate (widget.order.dateTime)}',
           style: TextStyle(fontSize: 11,color: Theme.of(context).textTheme.caption?.color ),
           ),
           Row(
@@ -45,22 +52,7 @@ appBar: AppBar(),
               ),
               ),
               const SizedBox(width: 10,),
-              Container(
-                padding: const EdgeInsets.all(7),
-                  decoration: const BoxDecoration(
-  
-             borderRadius: BorderRadius.all(Radius.circular(5)),  
-             
-  
-        color:   Colors.greenAccent,
-  
-    ),
-  
-  height: 25,
-  
-  width: 70,
-  child:  const Text('Delivered',style: TextStyle(color: Colors.black,)),
-              )
+             orderstaus(cancelled: widget.order.cancelled, delivered: widget.order.delivered, ontransit: widget.order.ontransit)
             ],
           ),
           
@@ -73,20 +65,20 @@ SizedBox(
   height: MediaQuery.of(context).size.height*.4,
   child: SizedBox(
   child: ListView.builder(
-    itemCount: order.foods.length,
+    itemCount: widget.order.foods.length,
     itemBuilder:((context, index) {
     return  SizedBox(
     
       child: Row(
    children: [
      CachedNetworkImage(
-  imageUrl: "https://cdn.britannica.com/50/80550-050-5D392AC7/Scoops-kinds-ice-cream.jpg",
+  imageUrl:widget.order.foods[index].image ,
   imageBuilder: (context, imageProvider) => Container(
     height: 60,
     width: 60,
     margin: const EdgeInsets.all(10),
      decoration:  BoxDecoration(
-                       color: Colors.red,
+                     
                           shape: BoxShape.rectangle,
                           image: DecorationImage(image: imageProvider,
           fit: BoxFit.cover,),
@@ -96,7 +88,12 @@ SizedBox(
   ),
   placeholder: (context, url) =>  CircularProgressIndicator(color: Theme.of(context).cardTheme.color,
   strokeWidth: 1.0,),
-  errorWidget: (context, url, error) => const Icon(Icons.error),
+  errorWidget: (context, url, error) => Container(
+   height: 60,
+    width: 60,
+
+    margin: const EdgeInsets.all(10),
+  child: const Icon(Icons.error)),
 ),
 
 Column(
@@ -105,19 +102,19 @@ Column(
   
   Row(
     children:  [
-    Text(order.foods[index].title,style: TextStyle(fontWeight: FontWeight.bold,color:Theme.of(context).textTheme.bodyText1?.color,),),
+    Text(widget.order.foods[index].title,style: TextStyle(fontWeight: FontWeight.bold,color:Theme.of(context).textTheme.bodyText1?.color,),),
   
      
   ],),
   const SizedBox(height: 10,),
-    Text('Qty: ${order.foods[index].quantity.toString()}',
+    Text('Qty: ${widget.order.foods[index].quantity.toString()}',
     style: TextStyle(
       
       fontSize: 10,
       color:Theme.of(context).textTheme.bodyText1?.color,),
    ),
    const SizedBox(height: 10,),
-   Text((int.parse(order.foods[index].price)* order.foods[index].quantity).toString(),
+   Text((int.parse(widget.order.foods[index].price)* widget.order.foods[index].quantity).toString(),
     style: TextStyle(
       fontSize: 10,
       fontWeight: FontWeight.bold,color:Theme.of(context).textTheme.bodyText1?.color,),
@@ -151,7 +148,7 @@ Column(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children:  [
-                 Text('Mpesa ****',style: TextStyle(fontSize: 11, color:  Theme.of(context).textTheme.bodyText1?.color,),),
+                 Text('Mpesa ***${widget.order.phoneNumber?.substring(7,10)}',style: TextStyle(fontSize: 11, color:  Theme.of(context).textTheme.bodyText1?.color,),),
                    Text('Address',style: TextStyle(fontSize: 11, color:  Theme.of(context).textTheme.bodyText1?.color,),),
               ],
             ),
@@ -165,7 +162,7 @@ Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children:  [
                 
-                     Text(order.address,
+                     Text(widget.order.address,
                      style: const TextStyle(fontSize: 11,color: Colors.black54),
                      maxLines: 3,
                   
@@ -184,12 +181,69 @@ const SizedBox(height: 10,),
     children: [
      Text('Total',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 11,  color:  Theme.of(context).textTheme.bodyText1?.color,),),
 
-     Text('Ksh ${order.totalPrice}',style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 11, ),),
+     Text('Ksh ${widget.order.totalPrice}',style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 11, ),),
     ],
   ),
   const SizedBox(height: 15,),
 
+
+
+  if(_isloading)
+ Center(
+   child: CircularProgressIndicator(color: Theme.of(context).iconTheme.color,
+            strokeWidth: 1.0),
+ ),
+   
+ if (!widget.order.ontransit && !widget.order.delivered && !widget.order.cancelled && !_isloading)  InkWell(
+                    onTap:(){
+                       setState(() {
+                   _isloading =true;
+
+                  }); 
+                      Provider.of<OrdersProvider>(context,listen: false).cancelorder(ordernumber:widget.order.orderNumber,
+                      id:widget.order.id,
+                      context: context,
+                      ).whenComplete(() {
+ if(mounted){                         setState(() {
+                   _isloading = false;
+
+                  });  }
+                      });
+                    },
+                   
+                    child: Container(
+                      padding: const EdgeInsets.all(5),
+                      margin: const EdgeInsets.all(20),
+                      height: 50,
+                      decoration: const BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(5.0),
+                        ),
+                      ),
+                      child: const Center(
+                        child: Text(
+                          ' Cancel Order',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),),),),
           
+
+
+
+
+
+
+
+
+
+
+
+
+
           ],
 
         ),

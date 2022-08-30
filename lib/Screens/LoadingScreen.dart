@@ -23,8 +23,8 @@ class _LoadingScreenState extends State<LoadingScreen> {
   
     Future.delayed(Duration.zero,() {
         
-        Provider.of< OrdersProvider>(context,listen: false).loadorders();
-         Provider.of< AddressesProvider>(context,listen: false).fetchaddresses();
+       Provider.of< OrdersProvider>(context,listen: false).loadorders();
+        Provider.of< AddressesProvider>(context,listen: false).fetchaddresses();
     });
   }
 

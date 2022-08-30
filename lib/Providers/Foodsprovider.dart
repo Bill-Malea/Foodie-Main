@@ -1,15 +1,16 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:firebase_app_check/firebase_app_check.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:foodie/Models/foodModel.dart';
 import 'package:http/http.dart' as http;
 import '../Utilities/Themes.dart';
 
 class FoodsProvider extends ChangeNotifier {
 
- 
+  final user =  FirebaseAuth.instance.currentUser!;
+
   late List<FoodModel> _chicken = [];
    List<FoodModel> _juice = [];
   List<FoodModel> _fries = [];
@@ -42,8 +43,10 @@ class FoodsProvider extends ChangeNotifier {
 
   Future<List<FoodModel>> loadfoods() async {
 var token = await  FirebaseAppCheck.instance.getToken();
+ final _idToken = await user.getIdToken();
+
  List<FoodModel> sub = [];
-    var url = 'https://foodie-test-9da37-default-rtdb.firebaseio.com/Foods/.json';
+    var url = 'https://foodie-test-9da37-default-rtdb.firebaseio.com/Foods/.json?auth=$_idToken';
 
     if (token != null) {
        
@@ -180,7 +183,7 @@ drink.add(FoodModel(
      errorToast("Check Your Internet Connection and Try again");
     } catch (e) {
       if (kDebugMode) {
-        print(e.toString());
+        print('============================= LOAD FOODS ERROR${e.toString()}');
       }
 
 

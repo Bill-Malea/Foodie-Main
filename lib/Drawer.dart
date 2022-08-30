@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:foodie/Utilities/Themes.dart';
 import 'package:foodie/Wishlist.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -19,10 +20,9 @@ class Drawerwidg extends StatefulWidget {
 class _DrawerwidgState extends State<Drawerwidg> {
   bool isLoading = false;
 
-  
+  var preferences = GetStorage();
   @override
   Widget build(BuildContext context) {
-   var user = FirebaseAuth.instance;
 
     itemsdrawer(IconData icon, String name, dynamic fn) {
       return InkWell(
@@ -49,7 +49,17 @@ class _DrawerwidgState extends State<Drawerwidg> {
         ),
       );
     }
-var _displayName = user.currentUser?.displayName;
+String _displayName (){
+  
+   var user = FirebaseAuth.instance;
+ var usernamephone = preferences.read("Username${user.currentUser?.uid}",)??'';
+ 
+var usernamegoogle = user.currentUser?.displayName;
+
+  return usernamegoogle??usernamephone;
+}
+
+
     return Card(
       color: Theme.of(context).colorScheme.primary,
       shape: const RoundedRectangleBorder(
@@ -73,7 +83,7 @@ var _displayName = user.currentUser?.displayName;
               height: 40,
             ),
              SizedBox(
-                child:   Text(_displayName == null ? '':'Welcome  $_displayName',),
+                child:   Text(_displayName()),
               height: 40,
             ),
             const Divider(

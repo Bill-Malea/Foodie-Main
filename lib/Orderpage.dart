@@ -3,6 +3,8 @@ import 'package:foodie/Orderslist.dart';
 import 'package:foodie/Providers/Ordersprovider.dart';
 import 'package:provider/provider.dart';
 
+import 'Providers/Utilityprovider.dart';
+
 class OrderPage extends StatelessWidget{
   const OrderPage({Key? key}) : super(key: key);
 
@@ -43,7 +45,7 @@ class OrderPage extends StatelessWidget{
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children:  [
                 
-                 Text('Order Date: Jun 20,2022',
+                 Text('Order Date: ${orderdate (orders[index].dateTime)}',
               style: TextStyle(fontSize: 11,
               color: Theme.of(context).textTheme.caption?.color ),
               ),
@@ -55,24 +57,9 @@ class OrderPage extends StatelessWidget{
                   ),
                   ),
                   const SizedBox(width: 10,),
-                  Container(
-                    padding: const EdgeInsets.all(7),
-                      decoration: const BoxDecoration(
-              
-                 borderRadius: BorderRadius.all(Radius.circular(5)),  
-                 
-              
-                    color:   Colors.greenAccent,
-              
-                ),
-              
-              height: 25,
-              
-              width: 70,
-              child:  const Text('Delivered',style: TextStyle(color: Colors.black,
-              
-              fontSize: 12,)),
-                  ),
+                    orderstaus(cancelled: orders[index].cancelled, 
+                    delivered:  orders[index].delivered, 
+                    ontransit:  orders[index].ontransit),
                 const SizedBox(width: 10,),
                 const Icon(Icons.arrow_forward_ios,size: 12,)
                       
@@ -84,6 +71,9 @@ class OrderPage extends StatelessWidget{
               ],),
               const SizedBox(height:5),
                      // const Divider(thickness: 1.0,color: Colors.black12,),
+
+
+               
               ],),
             ),
           );

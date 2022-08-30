@@ -9,7 +9,8 @@ import '../Orderslist.dart';
 
 class FetchPayment extends StatefulWidget{
   final OrderModel order;
-  const FetchPayment({Key? key, required this.order}) : super(key: key);
+    final String phone;
+  const FetchPayment({Key? key, required this.order, required this.phone}) : super(key: key);
 
   @override
   State<FetchPayment> createState() => _FetchPaymentState();
@@ -35,7 +36,7 @@ body:FutureBuilder(
                     Provider.of<CartItems>(
                       context,
                       listen: false,
-                    ).placeorder(context: context, order: widget.order);          
+                    ).placeorder(context: context, order: widget.order,phone: widget.phone);          
               }
           }else if(snapshot.hasError){
            

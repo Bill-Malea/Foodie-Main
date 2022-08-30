@@ -1,10 +1,12 @@
 import 'dart:convert';
 
 import 'package:firebase_app_check/firebase_app_check.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:foodie/Models/AddressModel.dart';
 import 'package:http/http.dart' as http;
 class AddressesProvider extends ChangeNotifier {
+    var user = FirebaseAuth.instance.currentUser;
 List<AddressModel> _addresses = [];
 List<String> _locations = [];
  List<String> get locations{
@@ -17,8 +19,10 @@ List<String> _locations = [];
 
 
  fetchaddresses() async {
+
+  final _idToken = await user?.getIdToken();
   var token = await  FirebaseAppCheck.instance.getToken();
-    const url = 'https://foodie-test-9da37-default-rtdb.firebaseio.com/Addresses/.json';
+    var url = 'https://foodie-test-9da37-default-rtdb.firebaseio.com/Addresses/.json?auth=$_idToken';
     try {
         var response = await http.get( Uri.parse(url), 
         headers: {"X-Firebase-AppCheck":token!},
